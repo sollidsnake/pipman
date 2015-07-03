@@ -3,7 +3,6 @@
 from pip2pkgbuild import Pip2Pkgbuild
 import argparse
 
-
 parser = argparse.ArgumentParser(description='Generate PKGBUILD ' +
                                  'from pip packages')
 

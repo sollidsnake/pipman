@@ -1,7 +1,3 @@
-# pkgname=python-mechanicalsoup
-# pkgver=0.2.1
-# pkgrel=1
-
 import subprocess
 import re
 import os
