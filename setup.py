@@ -1,7 +1,17 @@
+import subprocess
+import re
 from setuptools import setup
 
+from src.pipman.misc import ENCODING
+
+version_git = subprocess.check_output(["git", "describe"]).rstrip()
+version_git = version_git.decode(ENCODING)
+
+version_git = re.search("\d+\.\d+\.\d+",
+                        version_git).group(0)
+
 setup(name='pipman',
-      version='0.5.1',
+      version=version_git,
       description='Generate PKGBUILD from pip packages',
       url='https://github.com/sollidsnake/pipman',
       author='Jesse Nazario',
