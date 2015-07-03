@@ -8,7 +8,7 @@ class Log():
         self.log = logging.getLogger()
         sh = logging.StreamHandler(sys.stderr)
         sh.setLevel(logging.INFO)
-        format = logging.Formatter("- %(message)s")
+        format = logging.Formatter("pipman: %(message)s")
         sh.setFormatter(format)
         self.log.addHandler(sh)
         self.log.setLevel(logging.INFO)
