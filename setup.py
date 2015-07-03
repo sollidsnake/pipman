@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(name='pipman',
       version='0.5.0',
@@ -8,7 +8,7 @@ setup(name='pipman',
       author_email='jessenzr@gmail.com',
       license='GPL',
       keywords='archlinux pacman packaging',
-      packages=find_packages(),
+      packages=['.'],
 
       classifiers=[
 
