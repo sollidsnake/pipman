@@ -32,8 +32,11 @@ class Pip2Pkgbuild():
 
     def __create_virtualenv__(self):
         """Create virtualenv to install packages"""
-
         Pip2Pkgbuild.log.info("Preparing virtualenv")
+
+        if os.path.exists(VENV_DIR):
+            return
+
         virtualenv.create_environment(VENV_DIR,
                                       no_wheel=True)
 
@@ -45,7 +48,7 @@ class Pip2Pkgbuild():
             pack = self.packages[pack]
             dir = os.path.join(prefix, pack['pkgname'])
             if os.path.exists(dir):
-                print("Directory '%s' already exists" % dir)
+                Pip2Pkgbuild.log.error("Directory '%s' already exists" % dir)
                 quit()
 
             # store directory in package dict
