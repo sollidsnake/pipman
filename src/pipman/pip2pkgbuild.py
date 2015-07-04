@@ -25,10 +25,7 @@ class Pip2Pkgbuild():
                 continue
 
             self.install_in_venv(pack)
-
             self.packages[pack] = Pip2Pkgbuild.compile_package_info(pack)
-            self.packages[pack]['pack'] = pack
-            self.packages[pack]['pkgname'] = "python-%s" % pack
 
     def __create_virtualenv__(self):
         """Create virtualenv to install packages"""
@@ -63,8 +60,7 @@ class Pip2Pkgbuild():
             with open(os.path.join(pack['dir'], 'PKGBUILD'), 'w') as f:
                 f.write(pkgbuild)
 
-    @staticmethod
-    def install_in_venv(package):
+    def install_in_venv(self, package):
         """Install package in virtualenv"""
         Pip2Pkgbuild.log.info("Installing '%s' in virutalenv" % package)
 
@@ -73,6 +69,16 @@ class Pip2Pkgbuild():
                                'install',
                                '--disable-pip-version-check',
                                package])
+
+        dependencies = subprocess.check_output([VENV_PIP, 'show', package])
+        dependencies = dependencies.decode(ENCODING)
+        dependencies = re.search("Requires: (.*)$", dependencies)\
+                         .group(1).split(', ')
+
+        # add dependencies to self.packages, if not there yet
+        for dep in dependencies:
+            if dep not in self.packages.keys():
+                self.packages[dep] = Pip2Pkgbuild.compile_package_info(dep)
 
     @staticmethod
     def __generate_pkgbuild__(package_info):
@@ -140,5 +146,8 @@ class Pip2Pkgbuild():
 
         for i in info:
             info_dict[i[0]] = i[1]
+
+        info_dict['pack'] = package
+        info_dict['pkgname'] = "python-%s" % package.lower()
 
         return info_dict
