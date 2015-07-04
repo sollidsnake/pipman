@@ -1,6 +1,11 @@
 # Description
 Pipman generates PKGBUILD from pip packages.
 
+# Installation
+You can install:
+- using the aur package: https://aur4.archlinux.org/packages/pipman-git/
+- cloning this repo and running the `./pipman`
+
 # Usage
 The following generates PKGBUILDs for `MechanicalSoup` and `pyrasite` packages from pip:
 ```
