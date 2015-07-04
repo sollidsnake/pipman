@@ -1,0 +1,3 @@
+[submodule "pipman-git"]
+	path = pipman-git
+	url = ssh://aur@aur4.archlinux.org/pipman-git.git
