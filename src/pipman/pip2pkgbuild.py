@@ -77,7 +77,7 @@ class Pip2Pkgbuild():
 
         # add dependencies to self.packages, if not there yet
         for dep in dependencies:
-            if dep not in self.packages.keys():
+            if dep and dep not in self.packages.keys():
                 self.packages[dep] = Pip2Pkgbuild.compile_package_info(dep)
 
     @staticmethod
