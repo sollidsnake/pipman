@@ -110,7 +110,7 @@ class Pip2Pkgbuild():
         lines.append('arch=(any)')
         lines.append('url="%s"' % package_info['Home-page'])
         lines.append('license="%s"' % package_info['License'])
-        lines.append('depends=("python" "python-pip")')
+        lines.append('makedepends=("python" "python-pip")')
 
         lines.append('build() {')
         lines.append('  pip install --no-deps --target="%s" %s'
