@@ -72,13 +72,18 @@ class Pip2Pkgbuild():
 
         dependencies = subprocess.check_output([VENV_PIP, 'show', package])
         dependencies = dependencies.decode(ENCODING)
-        dependencies = re.search("Requires: (.*)$", dependencies)\
-                         .group(1).split(', ')
 
-        # add dependencies to self.packages, if not there yet
-        for dep in dependencies:
-            if dep and dep not in self.packages.keys():
-                self.packages[dep] = Pip2Pkgbuild.compile_package_info(dep)
+        try:
+            dependencies = re.search("Requires: (.*)$", dependencies)\
+                             .group(1).split(', ')
+
+            # add dependencies to self.packages, if not there yet
+            for dep in dependencies:
+                if dep and dep not in self.packages.keys():
+                    self.packages[dep] = Pip2Pkgbuild.compile_package_info(dep)
+
+        except AttributeError:
+            dependencies = None
 
     @staticmethod
     def __generate_pkgbuild__(package_info):
