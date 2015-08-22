@@ -1,7 +1,7 @@
 import subprocess
 import re
 import os
-import virtualenv
+import venv
 
 from misc import VENV_DIR, VENV_PIP, ENCODING, DEVNULL
 from misc import PYTHON_VERSION, blacklist
@@ -34,8 +34,15 @@ class Pip2Pkgbuild():
         if os.path.exists(VENV_DIR):
             return
 
-        virtualenv.create_environment(VENV_DIR,
-                                      no_wheel=True)
+        venv.create(VENV_DIR,
+                    with_pip=True)
+
+        # upgrade pip
+        Pip2Pkgbuild.log.info('checking for pip upgrade')
+        subprocess.check_call([VENV_PIP,
+                               'install',
+                               '-U',
+                               'pip'])
 
     def generate_all(self, prefix='.'):
         """Generate package/PKGBUILD for every package in self.packages"""
