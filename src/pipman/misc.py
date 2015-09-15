@@ -1,7 +1,6 @@
 import os
 import locale
-import re
-import subprocess
+import sys
 
 # packages that souldn't be generated
 blacklist = []
@@ -18,7 +17,4 @@ VENV_DIR = os.path.join(TMP_DIR, 'pipman-venv')
 VENV_PIP = os.path.join(VENV_DIR, 'bin/pip')
 
 # get python version from system, only the first two numbers
-PYTHON_VERSION = re.search(" (\d+\.\d+)",
-                           subprocess
-                           .check_output(["python", '--version'])
-                           .decode(ENCODING)).group(1)
+PYTHON_VERSION = "%d.%d" % (sys.version_info.major, sys.version_info.minor)
