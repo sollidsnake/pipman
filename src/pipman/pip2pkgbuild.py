@@ -121,7 +121,7 @@ class Pip2Pkgbuild():
         lines.append('pkgdesc="%s"' % package_info['Summary'])
         lines.append('arch=(any)')
         lines.append('url="%s"' % package_info['Home-page'])
-        lines.append('license="%s"' % package_info['License'])
+        lines.append('license=("%s")' % package_info['License'])
         lines.append('makedepends=("python" "python-pip")')
 
         lines.append('build() {')
