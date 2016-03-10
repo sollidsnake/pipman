@@ -31,18 +31,20 @@ class Pip2Pkgbuild():
         """Create virtualenv to install packages"""
         Pip2Pkgbuild.log.info("Preparing virtualenv")
 
+        Pip2Pkgbuild.log.info(">>>>" + VENV_DIR)
+        Pip2Pkgbuild.log.info(">>>>" + VENV_PIP)
         if os.path.exists(VENV_DIR):
             return
 
         venv.create(VENV_DIR,
-                    with_pip=True)
+                with_pip=True)
 
         # upgrade pip
         Pip2Pkgbuild.log.info('checking for pip upgrade')
         subprocess.check_call([VENV_PIP,
-                               'install',
-                               '-U',
-                               'pip'])
+            'install',
+            '-U',
+            'pip'])
 
     def generate_all(self, prefix='.'):
         """Generate package/PKGBUILD for every package in self.packages"""
@@ -64,8 +66,8 @@ class Pip2Pkgbuild():
             pkgbuild = Pip2Pkgbuild.__generate_pkgbuild__(pack)
             os.makedirs(pack['dir'])
 
-            with open(os.path.join(pack['dir'], 'PKGBUILD'), 'w') as f:
-                f.write(pkgbuild)
+            with open(os.path.join(pack['dir'], 'PKGBUILD'), 'w') as file_:
+                file_.write(pkgbuild)
 
     def install_in_venv(self, package):
         """Install package in virtualenv"""
@@ -82,7 +84,7 @@ class Pip2Pkgbuild():
 
         try:
             dependencies = re.search("Requires: (.*)$", dependencies)\
-                             .group(1).split(', ')
+                    .group(1).split(', ')
 
             # add dependencies to self.packages, if not there yet
             for dep in dependencies:
@@ -99,7 +101,7 @@ class Pip2Pkgbuild():
                               % package_info['pack'])
 
         # regex to match version and release
-        ver_rel = re.search("(\d+(?:\.\d+)+)(?:-(\d+))?",
+        ver_rel = re.search(r"(\d+(?:\.\d+)+)(?:-(\d+))?",
                             package_info['Version'])
 
         version = ver_rel.group(1)
@@ -154,7 +156,7 @@ class Pip2Pkgbuild():
         info = info.decode(ENCODING)
 
         # regex to match the values before and after :
-        info = re.findall("^([\w-]+): (.*)$", info, re.MULTILINE)
+        info = re.findall(r"^([\w-]+): (.*)$", info, re.MULTILINE)
 
         info_dict = {}
 
