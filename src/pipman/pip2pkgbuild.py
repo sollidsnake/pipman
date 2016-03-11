@@ -31,8 +31,6 @@ class Pip2Pkgbuild():
         """Create virtualenv to install packages"""
         Pip2Pkgbuild.log.info("Preparing virtualenv")
 
-        Pip2Pkgbuild.log.info(">>>>" + VENV_DIR)
-        Pip2Pkgbuild.log.info(">>>>" + VENV_PIP)
         if os.path.exists(VENV_DIR):
             return
 
