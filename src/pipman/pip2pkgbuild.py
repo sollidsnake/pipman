@@ -118,7 +118,7 @@ class Pip2Pkgbuild():
             pkgdesc=package_info['Summary'],
             url=package_info['Home-page'],
             license=package_info['License'],
-            depends=" ".join(['"python-' + e + '"' for e in package_info['Requires'].split(', ')]),
+            depends=" ".join(['"python-' + e + '"' for e in package_info['Requires'].split(', ') if e]),
             pack=package_info['pack'],
             pyversion=PYTHON_VERSION
             )
