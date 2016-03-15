@@ -8,7 +8,7 @@ arch=(any)
 url="{url}"
 license=("{license}")
 makedepends=("python" "python-pip")
-# depends=({depends})
+depends=({depends})
 
 build() {{
     pip install --no-deps --target="{pack}" {pack}
