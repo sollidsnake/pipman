@@ -1,44 +1,35 @@
 #!/usr/bin/env python3
 
-from pip2pkgbuild import Pip2Pkgbuild
-from pkgbuild_generation import install_packages, parse_packages
-import argparse
-import docopt
-
 """pipman.
 
-Generate PKGBUILD from pip packages.
+Generate PKGBUILD from pip packages
 
 Usage:
-    pipman (-h|--help)
-    pipman [--target-dir=DIR] <packages>...
+    pipman (-h | --help)
+    pipman [options] <packages>...
 
 Options:
-    -h --help  Print the help message
-    --target-dir=DIR  Directory where the PKGBUILD are created [default: "."]
+    -h --help                      Show this screen.
+    -t <dir>, --target-dir <dir>   target dir [default: .].
+
+Positional:
+    packages                       Packages to be generated
+
 """
 
+from pkgbuild_generation import install_packages, parse_packages
+import docopt
+
+
 if __name__ == "__main__":
-    args = docopt.docopt(__doc__)
-    parser = argparse.ArgumentParser(description='Generate PKGBUILD ' +
-            'from pip packages')
+    ARGS = docopt.docopt(__doc__)
 
-    parser.add_argument('packages', metavar='packages',
-            type=str, nargs='+',
-            help='Packages to be generated')
+    PACKAGES = ARGS['<packages>']
+    DIR_ = ARGS.get('--target-dir', '.')
+    print("{} : {}".format(PACKAGES, DIR_))
+    for k, v in ARGS.items():
+        print("{} : {}".format(k, v))
 
-    parser.add_argument('--target-dir', dest='dir',
-            help='Directory where the PKGBUILDs will ' +
-            'be generated. The current directory is the default')
-
-    args = parser.parse_args()
-
-    packages = parser.parse_args().packages
-
-    if packages:
-        dir = args.dir
-        if not dir:
-            dir = '.'
 
         # pip = Pip2Pkgbuild(packages)
         # pip.generate_all(dir)
