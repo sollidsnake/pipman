@@ -17,9 +17,10 @@ Positional:
 
 """
 
+import logging
+import sys
 from pkgbuild_generation import install_packages, parse_packages
 import docopt
-
 
 if __name__ == "__main__":
     ARGS = docopt.docopt(__doc__)
@@ -29,8 +30,14 @@ if __name__ == "__main__":
     print("{} : {}".format(PACKAGES, DIR_))
     for k, v in ARGS.items():
         print("{} : {}".format(k, v))
+    log = logging.getLogger("user")
+    stream_handler = logging.StreamHandler(sys.stderr)
+    stream_handler.setLevel(logging.INFO)
+    stream_handler.setFormatter(logging.Formatter("pipman: %(message)s"))
+    log.addHandler(stream_handler)
+    log.setLevel(logging.INFO)
 
-
-        # pip = Pip2Pkgbuild(packages)
-        # pip.generate_all(dir)
-        # install_packages(dir, *[elt for elt in parse_packages(packages)])
+    # pip = Pip2Pkgbuild(packages)
+    # pip.generate_all(dir)
+    log.info("List of packages : %s", PACKAGES)
+    install_packages(DIR_, *PACKAGES)

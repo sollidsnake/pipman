@@ -3,78 +3,27 @@
 
 """function to generate PKGBUILD"""
 
-import subprocess
+import logging
 import re
 import os
-import venv
 
 from misc import VENV_DIR, VENV_PIP, ENCODING, DEVNULL
 from misc import PYTHON_VERSION, blacklist
-from log import Log
 
-def create_virtualenv():
-    """Create virtualenv to install packages"""
-    # Pip2Pkgbuild.log.info("Preparing virtualenv")
+import pip_wrapper as pip
 
-    if os.path.exists(VENV_DIR):
-        return
-
-    venv.create(VENV_DIR, with_pip=True)
-
-    # upgrade pip
-    # Pip2Pkgbuild.log.info('checking for pip upgrade')
-    subprocess.check_call([VENV_PIP, 'install', '-U', 'pip'])
-
-def install_in_venv(package):
-    """Install package in virtualenv"""
-    # Pip2Pkgbuild.log.info("Installing '%s' in virutalenv" % package)
-
-    # install package in virtualenv pip
-    subprocess.check_call([VENV_PIP,
-        'install',
-        '--disable-pip-version-check',
-        '--no-dependencies',
-        package])
-    #
-
-def compile_package_info(package):
-    """Store 'pip show package' in dict"""
-    # Pip2Pkgbuild.log.info("Checking package info")
-
-    info = subprocess.check_output([VENV_PIP, 'show', package],
-            stderr=DEVNULL)
-
-    # we need to encode terminal output
-    info = info.decode(ENCODING)
-
-    # regex to match the values before and after :
-    info = re.findall(r"^([\w-]+): (.*)$", info, re.MULTILINE)
-
-    info_dict = {}
-
-    for i in info:
-        info_dict[i[0]] = i[1]
-
-    info_dict['pack'] = package
-    info_dict['pkgname'] = "python-%s" % package.lower()
-
-    return info_dict
-
-def parse_packages(*packages):
-    """ Parses packages """
-    for pack in packages:
-        if pack not in blacklist:
-            yield pack, compile_package_info(pack)
-
+from venv_wrapper import *
+from pkgbuild_parser import *
 
 def generate_pkgbuild(package_info):
     """Generate PKGBUILD for package"""
-    Pip2Pkgbuild.log.info("Generating pkgbuild for %s"
-            % package_info['pack'])
+
+    log = logging.getLogger("user")
+    log.info("Generating pkgbuild for %s", package_info['pack'])
 
     # regex to match version and release
     ver_rel = re.search(r"(\d+(?:\.\d+)+)(?:-(\d+))?",
-            package_info['Version'])
+                        package_info['Version'])
 
     version = ver_rel.group(1)
     release = ver_rel.group(2)
@@ -82,36 +31,39 @@ def generate_pkgbuild(package_info):
     if not release:
         release = '1'
 
+    # TODO : faire conflit avc pkgname
     # store the pkgbuild output variable in 'lines' var
     return open("PKGBUILD.tpl").read().format(
-            aut=package_info['Author'],
-            authmail=package_info['Author-email'],
-            pkgname=package_info['pkgname'],
-            pkgver=version,
-            pkgrel=release,
-            pkgdesc=package_info['Summary'],
-            url=package_info['Home-page'],
-            license=package_info['License'],
-            depends=" ".join(['"python-' + e + '"' for e in package_info['Requires'].split(', ') if e]),
-            pack=package_info['pack'],
-            pyversion=PYTHON_VERSION)
+        aut=package_info['Author'],
+        authmail=package_info['Author-email'],
+        pkgname=package_info['pkgname'],
+        pkgver=version,
+        pkgrel=release,
+        pkgdesc=package_info['Summary'],
+        url=package_info['Home-page'],
+        license=package_info['License'],
+        depends=" ".join(['"python-' + e + '"' for e in package_info['Requires'].split(', ') if e]),
+        pack=package_info['pack'],
+        pyversion=PYTHON_VERSION)
     #
 
 def generate_dir(packages, prefix='.'):
     """ Generate directories"""
     # check if directories don't exist
+
+    log = logging.getLogger("user")
     for pack in packages.values():
         dir_ = os.path.join(prefix, pack['pkgname'])
         if os.path.exists(dir_):
-            # Pip2Pkgbuild.log.error("Directory '%s' already exists" % dir)
-            quit()
+            log.error("Directory '%s' already exists", dir)
+            quit() # TODO : meilleur check
 
         # store directory in package dict
         packages[pack['pack']]['dir'] = dir
 
 def generate_pkgbuild_file(packages):
-    """Write the PKGBUILD file"""
-    # generate the package build and store in package/PKGBUILD
+    """generate the package build and store in package/PKGBUILD"""
+
     for pack in packages.values():
         pkgbuild = generate_pkgbuild(pack)
         os.makedirs(pack['dir'])
@@ -128,11 +80,19 @@ def generate_all(packages, prefix='.'):
 def install_packages(prefix, *packages):
     """ Install the packages """
     create_virtualenv()
-    for package in parse_packages(*packages):
+    pkg = {}
+    for k, package in parse_packages(*packages):
+        pkg[k] = package
         # If there is dependencies, install them
-        if package['Require']:
-            install_packages(*package['Require'])
+        logging.getLogger("user").info("Installing %s", package['Name'])
+        if package['Requires']:
+            logging.getLogger("user").info("Installing dependencie %s", package['Requires'])
+            install_packages(prefix, *[e for e in package['Requires'].split(",")])
         install_in_venv(package['Name'])
-        generate_all(package, prefix)
+    generate_all(pkg, prefix) # TODO : voir d'où vient l'erreur
 
+if __name__ == "__main__":
+    create_virtualenv()
+    for _, v in parse_packages("kademlia"):
+        print("{}".format(generate_pkgbuild(v)))
 
