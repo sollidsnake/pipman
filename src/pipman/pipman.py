@@ -19,18 +19,24 @@ Positional:
 
 import logging
 import sys
+import signal
+
 from pkgbuild_generation import install_packages, parse_packages
 import docopt
+
+def signal_handler(signal_, _):
+    """catch sigint and exit without stacktrace"""
+    print('pipman aborted by signal %s' % signal_)
+    sys.exit(1)
 
 if __name__ == "__main__":
     ARGS = docopt.docopt(__doc__)
 
+    signal.signal(signal.SIGINT, signal_handler)
+
     PACKAGES = ARGS['<packages>']
     DIR_ = ARGS.get('--target-dir', '.')
-    print("{} : {}".format(PACKAGES, DIR_))
-    for k, v in ARGS.items():
-        print("{} : {}".format(k, v))
-    log = logging.getLogger("user")
+    log = logging.getLogger('user')
     stream_handler = logging.StreamHandler(sys.stderr)
     stream_handler.setLevel(logging.DEBUG)
     stream_handler.setFormatter(logging.Formatter("pipman: %(message)s"))

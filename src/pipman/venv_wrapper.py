@@ -31,7 +31,7 @@ def install_in_venv(package):
     if not _venv_created:
         create_virtualenv()
     log = logging.getLogger("user")
-    log.info("Installing '%s' in virutalenv", package)
+    log.info("Installing '%s' in virutalenv at %s", package, VENV_DIR)
 
     # install package in virtualenv pip
     pip.install(package, "--disable-pip-version-check", "--no-dependencies", in_venv=True)

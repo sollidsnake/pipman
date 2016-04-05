@@ -20,7 +20,7 @@ from pkgbuild_parser import *
 def generate_pkgbuild(package_info: Dict[str, str]) -> str:
     """Generate PKGBUILD for package"""
 
-    log = logging.getLogger("user")
+    log = logging.getLogger('user')
     log.info("Generating pkgbuild for %s", package_info['pack'])
 
     # regex to match version and release
@@ -58,12 +58,17 @@ def create_dir(pkgname: str, prefix='.') -> str:
     # TODO : check if directory exists (without the pkgname)
     dest = os.path.join(prefix, pkgname)
     if not os.path.exists(dest):
+        logging.getLogger('user').info("Creating directory %s", dest)
         os.makedirs(dest)
+    else:
+        logging.getLogger('user').info("Directory %s already exists", dest)
     return dest
 
 def write_pkgbuild(package: Dict[str, str]):
     """write the PKGBUILD on a file"""
-    with open(os.path.join(package['dir'], 'PKGBUILD'), 'w') as file_:
+    dest = os.path.join(package['dir'], 'PKGBUILD')
+    logging.getLogger('user').info("Writing PKGBUILD at %s", dest)
+    with open(dest, 'w') as file_:
         file_.write(generate_pkgbuild(package))
 
 def generate_pkg(package: Dict[str, str], prefix='.'):
@@ -74,11 +79,11 @@ def generate_pkg(package: Dict[str, str], prefix='.'):
 def install_packages(prefix: str, *packages):
     """ Install the packages """
     for k, package in parse_packages(*packages):
-        logging.getLogger("user").info("Installing %s", package['Name'])
+        logging.getLogger('user').info("Installing %s", package['Name'])
         # log_pkg_info(package) # TODO
         if package['Requires']:
-            logging.getLogger("user").info("Installing dependencie %s", package['Requires'])
-            install_packages(prefix, *[e for e in package['Requires'].split(",")])
+            logging.getLogger('user').info("Installing dependencie %s", package['Requires'])
+            install_packages(prefix, *[e for e in package['Requires'].split(", ")])
         install_in_venv(package['Name'])
         generate_pkg(package)
 
