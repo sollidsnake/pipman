@@ -24,8 +24,8 @@ def compile_package_info(package):
 
     info_dict = {}
 
-    for i in info:
-        info_dict[i[0]] = i[1]
+    for k, v in info:
+        info_dict[k] = v
 
     info_dict['pack'] = package
     info_dict['pkgname'] = "python-%s" % package.lower()

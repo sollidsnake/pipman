@@ -7,6 +7,8 @@ import logging
 import re
 import os
 
+from typing import Dict, Tuple
+
 from misc import VENV_DIR, VENV_PIP, ENCODING, DEVNULL
 from misc import PYTHON_VERSION, blacklist
 
@@ -15,7 +17,7 @@ import pip_wrapper as pip
 from venv_wrapper import *
 from pkgbuild_parser import *
 
-def generate_pkgbuild(package_info):
+def generate_pkgbuild(package_info: Dict[str, str]) -> str:
     """Generate PKGBUILD for package"""
 
     log = logging.getLogger("user")
@@ -47,52 +49,39 @@ def generate_pkgbuild(package_info):
         pyversion=PYTHON_VERSION)
     #
 
-def generate_dir(packages, prefix='.'):
-    """ Generate directories"""
-    # check if directories don't exist
+def create_dir(pkgname: str, prefix='.') -> str:
+    """create destination dir and return the path
 
-    log = logging.getLogger("user")
-    for pack in packages.values():
-        dir_ = os.path.join(prefix, pack['pkgname'])
-        if os.path.exists(dir_):
-            log.error("Directory '%s' already exists", dir)
-            quit() # TODO : meilleur check
+    if destination dir already exists, do nothing (except logging)
+    and return the path"""
 
-        # store directory in package dict
-        packages[pack['pack']]['dir'] = dir
+    # TODO : check if directory exists (without the pkgname)
+    dest = os.path.join(prefix, pkgname)
+    if not os.path.exists(dest):
+        os.makedirs(dest)
+    return dest
 
-def generate_pkgbuild_file(packages):
-    """generate the package build and store in package/PKGBUILD"""
+def write_pkgbuild(package: Dict[str, str]):
+    """write the PKGBUILD on a file"""
+    with open(os.path.join(package['dir'], 'PKGBUILD'), 'w') as file_:
+        file_.write(generate_pkgbuild(package))
 
-    for pack in packages.values():
-        pkgbuild = generate_pkgbuild(pack)
-        os.makedirs(pack['dir'])
+def generate_pkg(package: Dict[str, str], prefix='.'):
+    """Generate the destination dir and write pkgbuild"""
+    package['dir'] = create_dir(package['pkgname'], prefix)
+    write_pkgbuild(package)
 
-        with open(os.path.join(pack['dir'], 'PKGBUILD'), 'w') as file_:
-            file_.write(pkgbuild)
-
-def generate_all(packages, prefix='.'):
-    """Generate package/PKGBUILD for every package in self.packages"""
-    generate_dir(packages, prefix)
-    generate_pkgbuild_file(packages)
-
-
-def install_packages(prefix, *packages):
+def install_packages(prefix: str, *packages):
     """ Install the packages """
-    create_virtualenv()
-    pkg = {}
     for k, package in parse_packages(*packages):
-        pkg[k] = package
-        # If there is dependencies, install them
         logging.getLogger("user").info("Installing %s", package['Name'])
+        # log_pkg_info(package) # TODO
         if package['Requires']:
             logging.getLogger("user").info("Installing dependencie %s", package['Requires'])
             install_packages(prefix, *[e for e in package['Requires'].split(",")])
         install_in_venv(package['Name'])
-    generate_all(pkg, prefix) # TODO : voir d'où vient l'erreur
+        generate_pkg(package)
 
 if __name__ == "__main__":
-    create_virtualenv()
-    for _, v in parse_packages("kademlia"):
-        print("{}".format(generate_pkgbuild(v)))
+    install_packages('.', "kademlia")
 

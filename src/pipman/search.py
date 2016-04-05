@@ -18,7 +18,7 @@ from color import PrintInColor
 # TODO : mettre le check pour voir si le pkg est installé -> hors pip ?
 
 def format_packages(package: str, desc: str, installed: bool) -> str:
-    """print formatted pkg"""
+    """Format package information (from pip search) like pacman output"""
 
     return """{python}/{name}{installed}
     {desc}""".format(python=PrintInColor.red('python'),
@@ -27,7 +27,7 @@ def format_packages(package: str, desc: str, installed: bool) -> str:
                      installed=PrintInColor.purple(" (installed)") if installed else "")
 
 def parse_search(pkg: str) -> str:
-    """perform pip search for the parameter pkg and format the output"""
+    """perform pip search for the package and format the output"""
     tmp = pip.search(pkg)
     if not tmp:
         return ""
