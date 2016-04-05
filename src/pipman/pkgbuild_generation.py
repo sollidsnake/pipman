@@ -35,18 +35,19 @@ def generate_pkgbuild(package_info: Dict[str, str]) -> str:
 
     # TODO : faire conflit avc pkgname
     # store the pkgbuild output variable in 'lines' var
-    return open("PKGBUILD.tpl").read().format(
-        aut=package_info['Author'],
-        authmail=package_info['Author-email'],
-        pkgname=package_info['pkgname'],
-        pkgver=version,
-        pkgrel=release,
-        pkgdesc=package_info['Summary'],
-        url=package_info['Home-page'],
-        license=package_info['License'],
-        depends=" ".join(['"python-' + e + '"' for e in package_info['Requires'].split(', ') if e]),
-        pack=package_info['pack'],
-        pyversion=PYTHON_VERSION)
+    with open('PKGBUILD.tpl') as file_:
+        return file_.read().format(
+            aut=package_info['Author'],
+            authmail=package_info['Author-email'],
+            pkgname=package_info['pkgname'],
+            pkgver=version,
+            pkgrel=release,
+            pkgdesc=package_info['Summary'],
+            url=package_info['Home-page'],
+            license=package_info['License'],
+            depends=" ".join(['"python-' + e + '"' for e in package_info['Requires'].split(', ') if e]),
+            pack=package_info['pack'],
+            pyversion=PYTHON_VERSION)
     #
 
 def create_dir(pkgname: str, prefix='.') -> str:
