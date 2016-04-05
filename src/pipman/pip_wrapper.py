@@ -4,6 +4,7 @@
 """wrapper around pip commands"""
 
 import subprocess
+import logging
 
 from misc import DEVNULL, VENV_PIP
 
@@ -29,5 +30,5 @@ def install(package, *args, **kwargs):
     pip = 'pip'
     if kwargs.get('in_venv', False):
         pip = VENV_PIP
-    print("{}".format([pip] + list(args) + [package]))
+    logging.getLogger('debug').debug("%s",format([pip, 'install'] + list(args) + [package]))
     subprocess.check_call([pip] + ['install'] + list(args) + [package])
