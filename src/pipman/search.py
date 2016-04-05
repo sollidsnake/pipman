@@ -22,13 +22,12 @@ def format_packages(package: str, desc: str, installed: bool) -> str:
 
     return """{python}/{name}{installed}
     {desc}""".format(python=PrintInColor.red('python'),
-                                name=package,
-                                desc=desc,
-                                installed=PrintInColor.purple(" (installed)") if installed else "")
+                     name=package,
+                     desc=desc,
+                     installed=PrintInColor.purple(" (installed)") if installed else "")
 
 def parse_search(pkg: str) -> str:
     """perform pip search for the parameter pkg and format the output"""
-    # TODO : utiliser dict (cf show && parse_pkg)
     tmp = pip.search(pkg)
     if not tmp:
         return ""
