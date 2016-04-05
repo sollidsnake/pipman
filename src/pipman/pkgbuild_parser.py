@@ -6,6 +6,7 @@ import re
 
 from misc import ENCODING, blacklist
 import pip_wrapper as pip
+import venv_wrapper as venv
 
 def compile_package_info(package):
     """Store 'pip show package' in dict"""
@@ -36,6 +37,11 @@ def parse_packages(*packages):
     logging.getLogger("user").info("pkg : %s", packages)
     for pack in packages:
         logging.getLogger("user").info("Parsing %s", pack)
+        venv.install_in_venv(pack)
         if pack not in blacklist:
             yield pack, compile_package_info(pack)
 
+
+if __name__ == "__main__":
+    for _, v in parse_packages("kad.py"):
+        print(v)
