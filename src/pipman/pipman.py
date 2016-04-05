@@ -32,7 +32,7 @@ if __name__ == "__main__":
         print("{} : {}".format(k, v))
     log = logging.getLogger("user")
     stream_handler = logging.StreamHandler(sys.stderr)
-    stream_handler.setLevel(logging.INFO)
+    stream_handler.setLevel(logging.DEBUG)
     stream_handler.setFormatter(logging.Formatter("pipman: %(message)s"))
     log.addHandler(stream_handler)
     log.setLevel(logging.INFO)
