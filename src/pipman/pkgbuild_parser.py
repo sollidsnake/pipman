@@ -1,14 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""Function for parsing result of pip show"""
+
 import logging
 import re
+
+from typing import Dict
 
 from misc import ENCODING, blacklist
 import pip_wrapper as pip
 import venv_wrapper as venv
 
-def compile_package_info(package):
+def compile_package_info(package: str) -> Dict[str, str]:
     """Store 'pip show package' in dict"""
 
     log = logging.getLogger("user")
@@ -24,15 +28,15 @@ def compile_package_info(package):
 
     info_dict = {}
 
-    for k, v in info:
-        info_dict[k] = v
+    for k, val in info:
+        info_dict[k] = val
 
     info_dict['pack'] = package
     info_dict['pkgname'] = "python-%s" % package.lower()
 
     return info_dict
 
-def parse_packages(*packages):
+def parse_packages(*packages) -> Dict[str, Dict[str, str]]:
     """ Parses packages """
     logging.getLogger("user").info("pkg : %s", packages)
     for pack in packages:

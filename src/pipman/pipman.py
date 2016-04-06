@@ -22,6 +22,7 @@ import sys
 import signal
 
 from pkgbuild_generation import install_packages, parse_packages
+
 import docopt
 
 def signal_handler(signal_, _):

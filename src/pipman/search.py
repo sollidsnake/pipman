@@ -15,7 +15,7 @@ import pip_wrapper as pip
 
 from color import PrintInColor
 
-# TODO : mettre le check pour voir si le pkg est installé -> hors pip ?
+# TODO : check if package is installed out of pip (??)
 
 def format_packages(package: str, desc: str, installed: bool) -> str:
     """Format package information (from pip search) like pacman output"""

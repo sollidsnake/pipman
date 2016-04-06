@@ -6,8 +6,9 @@
 import logging
 import re
 import os
+import filecmp
 
-from typing import Dict, Tuple
+from typing import Dict
 
 from misc import VENV_DIR, VENV_PIP, ENCODING, DEVNULL
 from misc import PYTHON_VERSION, blacklist
@@ -33,7 +34,6 @@ def generate_pkgbuild(package_info: Dict[str, str]) -> str:
     if not release:
         release = '1'
 
-    # TODO : faire conflit avc pkgname
     # store the pkgbuild output variable in 'lines' var
     with open('PKGBUILD.tpl') as file_:
         return file_.read().format(
@@ -48,7 +48,6 @@ def generate_pkgbuild(package_info: Dict[str, str]) -> str:
             depends=" ".join(['"python-' + e + '"' for e in package_info['Requires'].split(', ') if e]),
             pack=package_info['pack'],
             pyversion=PYTHON_VERSION)
-    #
 
 def create_dir(pkgname: str, prefix='.') -> str:
     """create destination dir and return the path
@@ -68,9 +67,11 @@ def create_dir(pkgname: str, prefix='.') -> str:
 def write_pkgbuild(package: Dict[str, str]):
     """write the PKGBUILD on a file"""
     dest = os.path.join(package['dir'], 'PKGBUILD')
-    logging.getLogger('user').info("Writing PKGBUILD at %s", dest)
+
     with open(dest, 'w') as file_:
+        logging.getLogger('user').info("Writing PKGBUILD at %s", dest)
         file_.write(generate_pkgbuild(package))
+
 
 def generate_pkg(package: Dict[str, str], prefix='.'):
     """Generate the destination dir and write pkgbuild"""
@@ -79,7 +80,7 @@ def generate_pkg(package: Dict[str, str], prefix='.'):
 
 def install_packages(prefix: str, *packages):
     """ Install the packages """
-    for k, package in parse_packages(*packages):
+    for _, package in parse_packages(*packages):
         logging.getLogger('user').info("Installing %s", package['Name'])
         # log_pkg_info(package) # TODO
         if package['Requires']:

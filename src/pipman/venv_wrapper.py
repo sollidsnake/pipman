@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""wrapper function for venv function"""
+
 import logging
 import venv
 import os
@@ -9,7 +11,7 @@ from misc import VENV_DIR, VENV_PIP
 
 import pip_wrapper as pip
 
-_venv_created = False
+_VENV_CREATED = False
 
 def create_virtualenv():
     """Create virtualenv to install packages"""
@@ -21,14 +23,13 @@ def create_virtualenv():
         venv.create(VENV_DIR, with_pip=True)
         log.info('checking for pip upgrade') # upgrade pip
         pip.install('pip', '-U', in_venv=True)
-    global _venv_created
-    _venv_created = True
+    global _VENV_CREATED
+    _VENV_CREATED = True
 
-def install_in_venv(package):
+def install_in_venv(package: str):
     """Install package in virtualenv"""
 
-    global _venv_created
-    if not _venv_created:
+    if not _VENV_CREATED:
         create_virtualenv()
     log = logging.getLogger("user")
     log.info("Installing '%s' in virutalenv at %s", package, VENV_DIR)
