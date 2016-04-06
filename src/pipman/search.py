@@ -45,5 +45,10 @@ def search(packages: List[str]) -> str:
     """search and format packages"""
     return reduce(lambda e, acc: e + "\n" + acc, [parse_search(e) for e in packages])
 
+def search_and_print(packages: List[str], options: List):
+    """print output of search"""
+    # TODO : print in log ???
+    print(search(packages))
+
 if __name__ == "__main__":
     print(search(['kad']))

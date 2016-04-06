@@ -8,7 +8,7 @@ import re
 import os
 import filecmp
 
-from typing import Dict
+from typing import Dict, List
 
 from misc import VENV_DIR, VENV_PIP, ENCODING, DEVNULL
 from misc import PYTHON_VERSION, blacklist
@@ -78,7 +78,7 @@ def generate_pkg(package: Dict[str, str], prefix='.'):
     package['dir'] = create_dir(package['pkgname'], prefix)
     write_pkgbuild(package)
 
-def install_packages(prefix: str, *packages):
+def install_packages(prefix: str, options: List, *packages):
     """ Install the packages """
     for _, package in parse_packages(*packages):
         logging.getLogger('user').info("Installing %s", package['Name'])
@@ -90,5 +90,5 @@ def install_packages(prefix: str, *packages):
         generate_pkg(package)
 
 if __name__ == "__main__":
-    install_packages('.', "kademlia")
+    install_packages('.', [], "kademlia")
 

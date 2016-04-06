@@ -6,7 +6,7 @@ Generate PKGBUILD from pip packages
 
 Usage:
     pipman (-h | --help)
-    pipman [options] <packages>...
+    pipman [options] <action> <packages>...
 
 Options:
     -h --help                      Show this screen.
@@ -15,6 +15,10 @@ Options:
 Positional:
     packages                       Packages to be generated
 
+Action:
+    install                        Install the package
+    search                         Seach for the package
+
 """
 
 import logging
@@ -22,6 +26,10 @@ import sys
 import signal
 
 from pkgbuild_generation import install_packages, parse_packages
+from color import PrintInColor
+from search import search_and_print
+
+# TODO : put good colors
 
 import docopt
 
@@ -37,11 +45,12 @@ if __name__ == "__main__":
 
     PACKAGES = ARGS['<packages>']
     DIR_ = ARGS.get('--target-dir', '.')
+    ACT = ARGS['<action>']
 
     log = logging.getLogger('user')
     stream_handler = logging.StreamHandler(sys.stdout)
-    stream_handler.setLevel(logging.DEBUG)
-    stream_handler.setFormatter(logging.Formatter("pipman: %(message)s"))
+    stream_handler.setLevel(logging.INFO)
+    stream_handler.setFormatter(logging.Formatter(PrintInColor.purple("pipman:") + "%(message)s"))
     log.addHandler(stream_handler)
     log.setLevel(logging.INFO)
 
@@ -52,7 +61,11 @@ if __name__ == "__main__":
     debug.addHandler(stream_handler)
     debug.setLevel(logging.INFO)
 
-    # pip = Pip2Pkgbuild(packages)
-    # pip.generate_all(dir)
-    log.info("List of packages : %s", PACKAGES)
-    install_packages(DIR_, *PACKAGES)
+    # TODO : pass option to the action function
+    ACTIONS = {
+        'install' : install_packages,
+        'search' : lambda _, args, *p: search_and_print(list(p), args)
+    }
+
+    debug.info("List of packages : %s", PACKAGES)
+    ACTIONS[ACT](DIR_, ARGS, *PACKAGES)
