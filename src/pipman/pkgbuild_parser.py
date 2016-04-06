@@ -36,7 +36,7 @@ def compile_package_info(package: str) -> Dict[str, str]:
 
     return info_dict
 
-def parse_packages(*packages) -> Generator[Dict[str, Dict[str, str]]]:
+def parse_packages(*packages) -> Generator:
     """ Parses packages """
     logging.getLogger("user").info("pkg : %s", packages)
     for pack in packages:
