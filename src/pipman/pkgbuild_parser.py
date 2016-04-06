@@ -6,7 +6,7 @@
 import logging
 import re
 
-from typing import Dict
+from typing import Dict, Generator
 
 from misc import ENCODING, blacklist
 import pip_wrapper as pip
@@ -36,7 +36,7 @@ def compile_package_info(package: str) -> Dict[str, str]:
 
     return info_dict
 
-def parse_packages(*packages) -> Dict[str, Dict[str, str]]:
+def parse_packages(*packages) -> Generator[Dict[str, Dict[str, str]]]:
     """ Parses packages """
     logging.getLogger("user").info("pkg : %s", packages)
     for pack in packages:
