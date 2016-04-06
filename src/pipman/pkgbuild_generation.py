@@ -78,11 +78,14 @@ def generate_pkg(package: Dict[str, str], prefix='.'):
     package['dir'] = create_dir(package['pkgname'], prefix)
     write_pkgbuild(package)
 
+def log_pkg_info(package: Dict[str, str]):
+    logging.getLogger('user').info("dependencies: %s", package['Requires'])
+
 def install_packages(prefix: str, options: List, *packages):
     """ Install the packages """
     for _, package in parse_packages(*packages):
         logging.getLogger('user').info("Installing %s", package['Name'])
-        # log_pkg_info(package) # TODO
+        log_pkg_info(package) # TODO
         if package['Requires']:
             logging.getLogger('user').info("Installing dependencie %s", package['Requires'])
             install_packages(prefix, *[e for e in package['Requires'].split(", ")])

@@ -13,7 +13,7 @@ from typing import List
 import pkgbuild_parser as parser
 import pip_wrapper as pip
 
-from color import PrintInColor
+from color2 import *
 
 # TODO : check if package is installed out of pip (??)
 
@@ -21,10 +21,10 @@ def format_packages(package: str, desc: str, installed: bool) -> str:
     """Format package information (from pip search) like pacman output"""
 
     return """{python}/{name}{installed}
-    {desc}""".format(python=PrintInColor.red('python'),
+    {desc}""".format(python=colorize('python', ForeGround.red),
                      name=package,
                      desc=desc,
-                     installed=PrintInColor.purple(" (installed)") if installed else "")
+                     installed=colorize(" (installed)", ForeGround.cyan) if installed else "")
 
 def parse_search(pkg: str) -> str:
     """perform pip search for the package and format the output"""

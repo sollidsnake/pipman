@@ -26,7 +26,7 @@ import sys
 import signal
 
 from pkgbuild_generation import install_packages, parse_packages
-from color import PrintInColor
+from color2 import *
 from search import search_and_print
 
 # TODO : put good colors
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     log = logging.getLogger('user')
     stream_handler = logging.StreamHandler(sys.stdout)
     stream_handler.setLevel(logging.INFO)
-    stream_handler.setFormatter(logging.Formatter(PrintInColor.purple("pipman:") + "%(message)s"))
+    stream_handler.setFormatter(logging.Formatter(colorize("pipman: ", ForeGround.magenta) + "\t %(message)s"))
     log.addHandler(stream_handler)
     log.setLevel(logging.INFO)
 
