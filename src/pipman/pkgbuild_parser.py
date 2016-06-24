@@ -9,8 +9,8 @@ import re
 from typing import Dict
 
 from misc import ENCODING, blacklist
-import pip_wrapper as pip
-import venv_wrapper as venv
+import pip
+import venv
 
 def compile_package_info(package: str) -> Dict[str, str]:
     """Store 'pip show package' in dict"""

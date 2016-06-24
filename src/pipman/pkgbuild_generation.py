@@ -13,9 +13,9 @@ from typing import Dict, List
 from misc import VENV_DIR, VENV_PIP, ENCODING, DEVNULL
 from misc import PYTHON_VERSION, blacklist
 
-import pip_wrapper as pip
+import pip
 
-from venv_wrapper import *
+from venv import *
 from pkgbuild_parser import *
 
 def generate_pkgbuild(package_info: Dict[str, str]) -> str:

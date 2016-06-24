@@ -11,9 +11,9 @@ from functools import reduce
 from typing import List
 
 import pkgbuild_parser as parser
-import pip_wrapper as pip
+import pip
 
-from color2 import colorize, ForeGround, BackGround
+from color import colorize, ForeGround, BackGround
 
 # TODO : check if package is installed out of pip (??)
 
@@ -47,7 +47,7 @@ def search(packages: List[str]) -> str:
     """search and format packages"""
     return reduce(lambda e, acc: e + "\n" + acc, [parse_search(e) for e in packages])
 
-def search_and_print(packages: List[str], options: List):
+def search_and_print(packages: List[str], options: List, **kw):
     """print output of search"""
     # TODO : print in log ???
     print(search(packages))

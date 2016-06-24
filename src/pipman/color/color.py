@@ -8,6 +8,7 @@ import sys
 from enum import Enum
 
 class Style(Enum):
+    """Enum for terminal style of printing"""
     reset = 0
     bright = 1
     dim = 2
@@ -18,6 +19,7 @@ class Style(Enum):
     hidden = 7
 
 class ForeGround(Enum):
+    """Enum for the foreground color of the font in the terminal"""
     black = 30
     red = 31
     green = 32
@@ -28,6 +30,7 @@ class ForeGround(Enum):
     white = 37
 
 class BackGround(Enum):
+    """Enum for the background color of the font in the terminal"""
     black = 40
     red = 41
     green = 42
@@ -37,10 +40,11 @@ class BackGround(Enum):
     cyan = 46
     white = 47
 
-def colorize(string, fg, bg=BackGround.black, style=Style.reset):
+def colorize(string, foreground, background=BackGround.black, style=Style.reset) -> str:
     """return the string with the color terminal code"""
     if sys.stdout.isatty:
-        col = '\x1b[{}m'.format(';'.join([str(style.value), str(fg.value), str(bg.value)]))
+        col = '\x1b[{}m'.format(';'.join([str(style.value),
+                                          str(foreground.value), str(background.value)]))
         reset = '\x1b[0m'
         return "{col}{str_}{clear}".format(col=col, str_=string, clear=reset)
     else:
