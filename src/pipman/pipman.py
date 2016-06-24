@@ -10,7 +10,8 @@ Usage:
 
 Options:
     -h --help                      Show this screen.
-    -t <dir>, --target-dir <dir>   target dir [default: .].
+    -t <dir>, --target-dir <dir>   Target dir [default: .].
+    -n --no-install                Only generate the pkgbuild, do not install the package
 
 Positional:
     packages                       Packages to be generated

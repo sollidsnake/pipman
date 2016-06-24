@@ -13,7 +13,7 @@ from typing import List
 import pkgbuild_parser as parser
 import pip_wrapper as pip
 
-from color2 import *
+from color2 import colorize, ForeGround, BackGround
 
 # TODO : check if package is installed out of pip (??)
 
@@ -24,7 +24,9 @@ def format_packages(package: str, desc: str, installed: bool) -> str:
     {desc}""".format(python=colorize('python', ForeGround.red),
                      name=package,
                      desc=desc,
-                     installed=colorize(" (installed)", ForeGround.cyan) if installed else "")
+                     installed=" " + colorize("(installed)",
+                                              ForeGround.black,
+                                              BackGround.yellow) if installed else "")
 
 def parse_search(pkg: str) -> str:
     """perform pip search for the package and format the output"""

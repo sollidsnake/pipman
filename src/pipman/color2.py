@@ -3,8 +3,9 @@
 
 """Utilities for terminal coloration"""
 
-from enum import Enum
+import sys
 
+from enum import Enum
 
 class Style(Enum):
     reset = 0
@@ -38,9 +39,12 @@ class BackGround(Enum):
 
 def colorize(string, fg, bg=BackGround.black, style=Style.reset):
     """return the string with the color terminal code"""
-    col = '\x1b[{}m'.format(';'.join([str(style.value), str(fg.value), str(bg.value)]))
-    reset = '\x1b[0m'
-    return "{col}{str_}{clear}".format(col=col, str_=string, clear=reset)
+    if sys.stdout.isatty:
+        col = '\x1b[{}m'.format(';'.join([str(style.value), str(fg.value), str(bg.value)]))
+        reset = '\x1b[0m'
+        return "{col}{str_}{clear}".format(col=col, str_=string, clear=reset)
+    else:
+        return string
 
 if __name__ == "__main__":
     print(colorize("Youpi Banane ! ", ForeGround.blue, BackGround.magenta, Style.underline))
