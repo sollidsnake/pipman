@@ -38,7 +38,6 @@ def compile_package_info(package: str) -> Dict[str, str]:
 
 def parse_packages(*packages) -> Dict[str, Dict[str, str]]:
     """ Parses packages """
-    logging.getLogger("user").info("pkg : %s", packages)
     for pack in packages:
         logging.getLogger("user").info("Parsing %s", pack)
         venv.install_in_venv(pack)
