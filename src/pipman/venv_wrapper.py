@@ -29,7 +29,7 @@ def create_virtualenv():
 def install_in_venv(package: str):
     """Install package in virtualenv"""
 
-    if not _VENV_CREATED:
+    if not _VENV_CREATED or not os.path.exists(VENV_DIR):
         create_virtualenv()
     log = logging.getLogger("user")
     log.info("Installing '%s' in virutalenv at %s", package, VENV_DIR)
