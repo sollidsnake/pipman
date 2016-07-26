@@ -19,9 +19,7 @@ args = parser.parse_args()
 packages = args.packages
 
 if packages:
-    dir = args.dir
-    if not dir:
-        dir = '.'
+    dir = args.dir if args.dir else '.'
 
     pip = Pip2Pkgbuild(packages)
     pip.generate_all(dir)
