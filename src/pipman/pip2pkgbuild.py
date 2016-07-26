@@ -14,7 +14,7 @@ class Pip2Pkgbuild():
 
     def __init__(self, packages):
         # start virtualenv
-        self.__create_virtualenv__()
+        self._create_virtualenv()
 
         # intialize packages variable
         self.packages = {}
@@ -27,7 +27,7 @@ class Pip2Pkgbuild():
             self.install_in_venv(pack)
             self.packages[pack] = Pip2Pkgbuild.compile_package_info(pack)
 
-    def __create_virtualenv__(self):
+    def _create_virtualenv(self):
         """Create virtualenv to install packages"""
         Pip2Pkgbuild.log.info("Preparing virtualenv")
 
@@ -61,7 +61,7 @@ class Pip2Pkgbuild():
         # generate the package build and store in package/PKGBUILD
         for pack in self.packages:
             pack = self.packages[pack]
-            pkgbuild = Pip2Pkgbuild.__generate_pkgbuild__(pack)
+            pkgbuild = Pip2Pkgbuild._generate_pkgbuild(pack)
             os.makedirs(pack['dir'])
 
             with open(os.path.join(pack['dir'], 'PKGBUILD'), 'w') as f:
@@ -93,7 +93,7 @@ class Pip2Pkgbuild():
             dependencies = None
 
     @staticmethod
-    def __generate_pkgbuild__(package_info):
+    def _generate_pkgbuild(package_info):
         """Generate PKGBUILD for package"""
         Pip2Pkgbuild.log.info("Generating pkgbuild for %s"
                               % package_info['pack'])
