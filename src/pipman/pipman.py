@@ -25,8 +25,6 @@ Action:
 import logging
 import sys
 import signal
-import shutil
-import os
 
 from pkgbuild_generation import install_packages  # , parse_packages
 from color import colorize, ForeGround
@@ -34,24 +32,18 @@ from search import search_and_print
 from misc import VENV_DIR
 from pacman import makepkg
 from venv2 import Venv
+from pip2 import PackageNotFound
 
 import docopt
-
-
-def clean():
-    """clean tmp files (usefull if venv not fully installed)"""
-    shutil.rmtree(VENV_DIR)
 
 
 def signal_handler(signal_, _):
     """catch sigint and exit without stacktrace"""
     print('pipman aborted by signal %s' % signal_)
-    clean()
     sys.exit(1)
 
 # TODO : find how install dependencie as dependencie (for pacman)
 # TODO : put file in /tmp or clean after install (if not --no-install)
-
 
 def init_user_log():
     """init user log"""
