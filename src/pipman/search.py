@@ -7,11 +7,11 @@ pip search function wrapper
 
 import re
 
+import logging
 from functools import reduce
 from typing import List
 
-import pkgbuild_parser as parser
-import pip
+from pip2 import search
 
 from color import colorize, ForeGround, BackGround
 
@@ -30,7 +30,7 @@ def format_packages(package: str, desc: str, installed: bool) -> str:
 
 def parse_search(pkg: str) -> str:
     """perform pip search for the package and format the output"""
-    tmp = pip.search(pkg)
+    tmp = search(pkg)
     if not tmp:
         return ""
     result = ""
@@ -43,14 +43,14 @@ def parse_search(pkg: str) -> str:
             result += format_packages(grp.group(1), grp.group(2), installed) + "\n"
     return result
 
-def search(packages: List[str]) -> str:
+def search_and_fmt(packages: List[str]) -> str:
     """search and format packages"""
     return reduce(lambda e, acc: e + "\n" + acc, [parse_search(e) for e in packages])
 
-def search_and_print(packages: List[str], options: List, **kw):
+def search_and_print(packages: List[str]):
     """print output of search"""
     # TODO : print in log ???
-    print(search(packages))
+    print(search_and_fmt(packages))
 
 if __name__ == "__main__":
     print(search(['kad']))
