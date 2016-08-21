@@ -103,14 +103,3 @@ if __name__ == "__main__":
     except PermissionError as exc:
         USER.log(logging.ERROR, "Unable to write the PKGBUILD, Please make sure\
                  you have the right to write to %s", exc.filename)
-
-    # OUTPUT = ACTIONS[ACT](DIR_, ARGS, *PACKAGES, venv=VENV)
-
-    # if OUTPUT and not ARGS.get('--no-install', False):
-    # FUNC = lambda x: x[0]
-    # OUTPUT.sort(key=FUNC, reverse=True)
-    # for _, pkg in OUTPUT:
-    # path = os.path.join(DIR_, pkg)
-    # TODO : force yes for all (if option given)
-    # makepkg(path, install=True)
-    # DEBUG.info(path)
