@@ -68,6 +68,12 @@ def init_debug_log():
     debug.setLevel(logging.INFO)
     return debug
 
+
+def install_if(pkgs, path, venv, install_):
+    pkgs_ = install_packages(path, *pkgs, venv=venv)
+    if install_:
+        pass
+
 if __name__ == "__main__":
     ARGS = docopt.docopt(__doc__)
 
@@ -79,23 +85,32 @@ if __name__ == "__main__":
 
     DEBUG, USER = init_debug_log(), init_debug_log()
 
+    DEBUG.info("Creating venv in %s", VENV_DIR)
     VENV = Venv(VENV_DIR)
 
-    # TODO : pass option to the action function
     ACTIONS = {
-        'install': install_packages,
-        'search': lambda _, args, *p, **kw: search_and_print(list(p), args, **kw)
+        'search': lambda: search_and_print(PACKAGES),
+        'install': lambda: install_if(PACKAGES, DIR_, VENV, ARGS.get('--no-install', False))
     }
 
     DEBUG.info("List of packages : %s", PACKAGES)
-    OUTPUT = ACTIONS[ACT](DIR_, ARGS, *PACKAGES, venv=VENV)
 
-    if OUTPUT and not ARGS.get('--no-install', False):
-        FUNC = lambda x: x[0]
-        OUTPUT.sort(key=FUNC, reverse=True)
-        for _, pkg in OUTPUT:
-            path = os.path.join(DIR_, pkg)
-            # TODO : force yes for all (if option given)
-            makepkg(path, install=True)
-            DEBUG.info(path)
+    OUTPUT = ACTIONS[ACT]
+    try:
+        OUTPUT()
+    except PackageNotFound as exc:
+        USER.log(logging.WARNING, exc.pretty_print())
+    except PermissionError as exc:
+        USER.log(logging.ERROR, "Unable to write the PKGBUILD, Please make sure\
+                 you have the right to write to %s", exc.filename)
 
+    # OUTPUT = ACTIONS[ACT](DIR_, ARGS, *PACKAGES, venv=VENV)
+
+    # if OUTPUT and not ARGS.get('--no-install', False):
+    # FUNC = lambda x: x[0]
+    # OUTPUT.sort(key=FUNC, reverse=True)
+    # for _, pkg in OUTPUT:
+    # path = os.path.join(DIR_, pkg)
+    # TODO : force yes for all (if option given)
+    # makepkg(path, install=True)
+    # DEBUG.info(path)
