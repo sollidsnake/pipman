@@ -8,9 +8,9 @@ import re
 
 from typing import Dict, Generator
 
+# import venv
 from misc import ENCODING, blacklist
-import pip_wrapper as pip
-import venv_wrapper as venv
+import pip2 as pip
 
 def compile_package_info(package: str) -> Dict[str, str]:
     """Store 'pip show package' in dict"""
@@ -36,9 +36,8 @@ def compile_package_info(package: str) -> Dict[str, str]:
 
     return info_dict
 
-def parse_packages(*packages) -> Generator:
+def parse_packages(venv, *packages) -> Dict[str, Dict[str, str]]:
     """ Parses packages """
-    logging.getLogger("user").info("pkg : %s", packages)
     for pack in packages:
         logging.getLogger("user").info("Parsing %s", pack)
         venv.install_in_venv(pack)

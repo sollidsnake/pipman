@@ -1,26 +1,17 @@
 # Description
-Pipman generates PKGBUILD from pip packages.
+Fork from [pipman](https://github.com/sollidsnake/pipman)
 
-# Installation
-You can install:
-- using the aur package: https://aur4.archlinux.org/packages/pipman-git/
-- cloning this repo and running the `./pipman`
+# Why
 
-# Usage
-The following generates PKGBUILDs for `MechanicalSoup` and `pyrasite` packages from pip:
-```
-pipman MechanicalSoup pyrasite
-```
-Then you should see the directories `python-MechanicalSoup` and `python-pyrasite` in the current directory, each containing its PKGBUILD.
+Initialy, this fork was made to correct an error in the generated __PKGBUILD__. But other changes were mades :
 
-You can also specify where you want the PKGBUILDs to be generated:
-```
-pipman MechanicalSoup pyrasite --target-dir=/tmp/
-```
+- Add automatic installation from generated packages
+- Refactoring
+- Better output (Work In Progress)
+- Better command line handling : switch to docopt and using pacman like options (WIP)
 
 # Todo
-There are a few missing features I plan to implement:
-- option to install generated PKGBUILDs automatically
-- try to integrate with pip dependencies
-- better info output
-- currently works with python3 only
+
+- Ensure that dependencies are installed as dependencies (and as manually installed)
+- Improve output
+- Python 2 support
