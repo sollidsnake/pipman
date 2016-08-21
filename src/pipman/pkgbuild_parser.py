@@ -8,9 +8,9 @@ import re
 
 from typing import Dict
 
+# import venv
 from misc import ENCODING, blacklist
-import pip
-import venv
+import pip2 as pip
 
 def compile_package_info(package: str) -> Dict[str, str]:
     """Store 'pip show package' in dict"""
@@ -36,7 +36,7 @@ def compile_package_info(package: str) -> Dict[str, str]:
 
     return info_dict
 
-def parse_packages(*packages) -> Dict[str, Dict[str, str]]:
+def parse_packages(venv, *packages) -> Dict[str, Dict[str, str]]:
     """ Parses packages """
     for pack in packages:
         logging.getLogger("user").info("Parsing %s", pack)
