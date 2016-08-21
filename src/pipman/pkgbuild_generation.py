@@ -5,7 +5,7 @@
 
 import logging
 
-from typing import Dict, List
+from typing import Dict
 
 from pkgbuild_parser import parse_packages
 import printer
@@ -27,7 +27,7 @@ def install_packages(prefix: str, *packages, **kwargs):
     for _, package in parse_packages(venv_, *packages):
 
         logging.getLogger('user').info("Installing %s", package['Name'])
-        log_pkg_info(package) # TODO
+        log_pkg_info(package)
 
         if package['Requires']:
 
@@ -45,4 +45,3 @@ def install_packages(prefix: str, *packages, **kwargs):
 
 if __name__ == "__main__":
     install_packages('.', [], "kademlia")
-

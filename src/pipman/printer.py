@@ -6,7 +6,7 @@
 import os
 import logging
 import re
-from typing import Dict, List
+from typing import Dict
 
 from misc import PYTHON_VERSION
 
@@ -69,4 +69,3 @@ def generate_pkg(package: Dict[str, str], prefix='.'):
     """Generate the destination dir and write pkgbuild"""
     package['dir'] = create_dir(package['pkgname'], prefix)
     write_pkgbuild(package)
-

@@ -6,9 +6,8 @@
 import logging
 import re
 
-from typing import Dict, Generator
+from typing import Dict
 
-# import venv
 from misc import ENCODING, blacklist
 import pip2 as pip
 
