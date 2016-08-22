@@ -21,7 +21,7 @@ ENCODING = locale.getdefaultlocale()[1]
 class PackageNotFound(Exception):
     """pkg not found exception"""
     def __init__(self, pkg):
-        Exception.__init__()
+        Exception.__init__(self)
         self._pkg = pkg
 
     def pretty_print(self):
