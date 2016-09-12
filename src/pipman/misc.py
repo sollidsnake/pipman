@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""few global constant"""
+"""some global constants"""
 
 import os
 import locale

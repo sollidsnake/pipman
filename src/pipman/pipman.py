@@ -83,14 +83,16 @@ if __name__ == "__main__":
     DIR_ = ARGS.get('--target-dir', '.')
     ACT = ARGS['<action>']
 
-    DEBUG, USER = init_debug_log(), init_debug_log()
+    DEBUG, USER = init_debug_log(), init_user_log()
 
     DEBUG.info("Creating venv in %s", VENV_DIR)
     VENV = Venv(VENV_DIR)
 
     ACTIONS = {
         'search': lambda: search_and_print(PACKAGES),
-        'install': lambda: install_if(PACKAGES, DIR_, VENV, ARGS.get('--no-install', False))
+        'install': lambda: install_if(PACKAGES, DIR_, VENV,
+                                      ARGS.get('--no-install', False)),
+        'generate': lambda: install_if(PACKAGES, DIR_, VENV, False)
     }
 
     DEBUG.info("List of packages : %s", PACKAGES)
