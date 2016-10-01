@@ -10,6 +10,7 @@ from typing import Dict
 
 from misc import PYTHON_VERSION
 
+
 def generate_pkgbuild(package_info: Dict[str, str]) -> str:
     """Generate PKGBUILD for package"""
 
@@ -38,9 +39,11 @@ def generate_pkgbuild(package_info: Dict[str, str]) -> str:
             url=package_info['Home-page'],
             license=package_info['License'],
             depends=" ".join(['"python-' + e + '"'
-                              for e in package_info['Requires'].split(', ') if e]),
+                              for e in package_info['Requires'].split(', ')
+                              if e]),
             pack=package_info['pack'],
             pyversion=PYTHON_VERSION)
+
 
 def create_dir(pkgname: str, prefix='.') -> str:
     """create destination dir and return the path
@@ -56,6 +59,7 @@ def create_dir(pkgname: str, prefix='.') -> str:
     else:
         logging.getLogger('user').info("Directory %s already exists", dest)
     return dest
+
 
 def write_pkgbuild(package: Dict[str, str]):
     """write the PKGBUILD on a file"""

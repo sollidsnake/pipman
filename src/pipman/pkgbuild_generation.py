@@ -10,13 +10,16 @@ from typing import Dict
 from pkgbuild_parser import parse_packages
 import printer
 
+
 def log_pkg_info(package: Dict[str, str]):
     """log some imfos"""
     logging.getLogger('user').info("dependencies: %s", package['Requires'])
 
+
 def dep_of(pkg):
     """list dependencies of pkg"""
     return [e for e in pkg['Requires'].split(", ")]
+
 
 def install_packages(prefix: str, *packages, **kwargs):
     """Install the packages"""
@@ -35,14 +38,12 @@ def install_packages(prefix: str, *packages, **kwargs):
             pkg_list += install_packages(prefix, *dep_of(package),
                                          deplevel=dep_level+1, venv=venv_)
 
-
         venv_.install_in_venv(package['Name'])
-        printer.generate_pkg(package)
+        printer.generate_pkg(package, prefix)
 
         # Append the dependancie depth (0 for the package installed by the
         # user, 1 for its dependencie ...)
         pkg_list.append((dep_level, package['pkgname']))
-
 
     return pkg_list
 

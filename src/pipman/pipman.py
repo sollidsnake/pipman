@@ -45,6 +45,7 @@ def signal_handler(signal_, _):
 # TODO : find how install dependencie as dependencie (for pacman)
 # TODO : put file in /tmp or clean after install (if not --no-install)
 
+
 def init_user_log():
     """init user log"""
     log = logging.getLogger('user')

@@ -51,7 +51,9 @@ class Venv(object):
 
     def install_in_venv(self, package: str):
         """Install package in virtualenv"""
-        self._user_log.info("Installing '%s' in virutalenv at %s", package, self._path)
+        self._user_log.info("Installing '%s' in virutalenv at %s",
+                            package,
+                            self._path)
         try:
             pip2.install(package, "--disable-pip-version-check",
                          "--no-dependencies", venv_path=self.path)
