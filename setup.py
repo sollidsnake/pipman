@@ -19,7 +19,7 @@ setup(name='pipman',
       license='GPL',
       keywords='archlinux pacman packaging',
       package_dir={'': 'src'},
-      packages=['pipman'],
+      packages=['pipman', 'pipman.pip2'],
 
       classifiers=[
 
