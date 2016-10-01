@@ -25,6 +25,7 @@ Action:
 import logging
 import sys
 import signal
+import os
 
 from pkgbuild_generation import install_packages  # , parse_packages
 from color import colorize, ForeGround
@@ -52,7 +53,8 @@ def init_user_log():
     stream_handler = logging.StreamHandler(sys.stdout)
     stream_handler.setLevel(logging.INFO)
     stream_handler.setFormatter(
-        logging.Formatter(colorize("pipman: ", ForeGround.magenta) + "\t %(message)s"))
+        logging.Formatter(colorize("pipman: ",
+                                   ForeGround.magenta) + "\t %(message)s"))
     log.addHandler(stream_handler)
     log.setLevel(logging.INFO)
     return log
@@ -70,10 +72,14 @@ def init_debug_log():
     return debug
 
 
-def install_if(pkgs, path, venv, install_):
+def install_if(pkgs, path, venv, no_install):
     pkgs_ = install_packages(path, *pkgs, venv=venv)
-    if install_:
-        pass
+
+    if not no_install:
+        for pkg in pkgs_:
+            pkg_dir = os.path.join(path, pkg[1])
+            makepkg(pkg_dir, install=not no_install)
+
 
 if __name__ == "__main__":
     ARGS = docopt.docopt(__doc__)
