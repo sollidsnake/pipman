@@ -8,7 +8,7 @@ import logging
 import re
 from typing import Dict
 
-from misc import PYTHON_VERSION
+from misc import PYTHON_VERSION, TPL_FILE
 
 
 def generate_pkgbuild(package_info: Dict[str, str]) -> str:
@@ -28,7 +28,7 @@ def generate_pkgbuild(package_info: Dict[str, str]) -> str:
         release = '1'
 
     # store the pkgbuild output variable in 'lines' var
-    with open('PKGBUILD.tpl') as file_:
+    with open(TPL_FILE) as file_:
         return file_.read().format(
             aut=package_info['Author'],
             authmail=package_info['Author-email'],

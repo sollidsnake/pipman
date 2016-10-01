@@ -20,6 +20,7 @@ DEVNULL = open(os.devnull, 'w')
 TMP_DIR = os.path.join(os.path.sep, 'tmp', 'pipman')
 VENV_DIR = os.path.join(TMP_DIR, 'pipman-venv')
 VENV_PIP = os.path.join(VENV_DIR, 'bin/pip')
+TPL_FILE = os.path.join(os.path.dirname(__file__), 'PKGBUILD.tpl')
 
 # get python version from system, only the first two numbers
 PYTHON_VERSION = "%d.%d" % (sys.version_info.major, sys.version_info.minor)
