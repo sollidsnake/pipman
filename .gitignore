@@ -1,4 +1,5 @@
 python-*
+__pycache__/
 *.pyc
 __pycache__
 .ropeproject
