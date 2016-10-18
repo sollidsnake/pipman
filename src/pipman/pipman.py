@@ -1,27 +1,52 @@
 #!/usr/bin/env python3
 
-from pip2pkgbuild import Pip2Pkgbuild
-import argparse
+"""pipman.
+Generate PKGBUILD from pip packages
 
-parser = argparse.ArgumentParser(description='Generate PKGBUILD ' +
-                                 'from pip packages')
+Usage:
+    pipman (-h | --help)
+    pipman [options] <action> <packages>...
 
-parser.add_argument('packages', metavar='packages',
-                    type=str, nargs='+',
-                    help='Packages to be generated')
+Options:
+    -h --help                      Show this screen.
+    -t <dir>, --target-dir <dir>   Target dir [default: .].
+    -n --no-install                Only generate the pkgbuild, do not install the package
 
-parser.add_argument('--target-dir', dest='dir',
-                    help='Directory where the PKGBUILDs will ' +
-                    'be generated. The current directory is the default')
+Positional:
+    packages                       Packages to be generated
 
-args = parser.parse_args()
+Action:
+    install                        Install the package
+    search                         Seach for the package
 
-packages = args.packages
+"""
 
-if packages:
-    dir = args.dir
-    if not dir:
+from docopt import docopt
+
+
+def generate(args):
+    from pip2pkgbuild import Pip2Pkgbuild
+    dir = args['--target-dir']
+    if dir is False:
         dir = '.'
 
-    pip = Pip2Pkgbuild(packages)
-    pip.generate_all(dir)
+    packages = args['<packages>']
+
+    Pip2Pkgbuild(packages).generate_all(dir)
+
+
+def search(args):
+    from search import search
+    search(args['<packages>'])
+
+
+if __name__ == '__main__':
+    args = docopt(__doc__)
+
+    action = args['<action>']
+    action_index = {
+        'search': search,
+        'install': generate,
+    }
+
+    action_index[action](args)
