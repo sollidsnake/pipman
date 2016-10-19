@@ -5,19 +5,20 @@ Generate PKGBUILD from pip packages
 
 Usage:
     pipman (-h | --help)
-    pipman [options] <action> <packages>...
+    pipman [options] <packages>...
+
+Examples:
+    pipman sympy
+    pipman numpy sympy --target-dir=/tmp
+    pipman -s browser
 
 Options:
     -h --help                      Show this screen.
     -t <dir>, --target-dir <dir>   Target dir [default: .].
-    -n --no-install                Only generate the pkgbuild, do not install the package
+    -s                             Search for packages in pip's repository
 
 Positional:
     packages                       Packages to be generated
-
-Action:
-    install                        Install the package
-    search                         Seach for the package
 
 """
 
@@ -43,10 +44,9 @@ def search(args):
 if __name__ == '__main__':
     args = docopt(__doc__)
 
-    action = args['<action>']
-    action_index = {
-        'search': search,
-        'install': generate,
-    }
+    action = generate
 
-    action_index[action](args)
+    if args['-s']:
+        action = search
+
+    action(args)
