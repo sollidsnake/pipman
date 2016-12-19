@@ -86,6 +86,24 @@ class Pip2Pkgbuild():
             with open(os.path.join(pack['dir'], 'PKGBUILD'), 'w') as f:
                 f.write(pkgbuild)
 
+    def install_all(self, prefix='.'):
+        """Install the packages"""
+        self.generate_all(prefix)
+        for _, dep in self.dependencies.items():
+            path = os.getcwd()
+            os.chdir(os.path.join(prefix, dep['pkgname']))
+            subprocess.check_call(['makepkg',
+                                   '--install',
+                                   '--asdeps'])
+            os.chdir(path)
+        for _, pack in self.packages.items():
+            path = os.getcwd()
+            os.chdir(os.path.join(prefix, pack['pkgname']))
+            subprocess.check_call(['makepkg',
+                                   '--install',
+                                   os.path.join(prefix, pack['pkgname'])])
+            os.chdir(path)
+
     def install_in_venv(self, package):
         """Install package in virtualenv"""
         Pip2Pkgbuild.log.info("Installing '%s' in virutalenv" % package)
