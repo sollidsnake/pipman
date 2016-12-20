@@ -18,6 +18,7 @@ class Pip2Pkgbuild():
 
         # intialize packages variable
         self.packages = {}
+        self.dependencies = {}
 
         # install and create package dict
         for pack in packages:
@@ -53,7 +54,17 @@ class Pip2Pkgbuild():
             dir = os.path.join(prefix, pack['pkgname'])
             if os.path.exists(dir):
                 Pip2Pkgbuild.log.error("Directory '%s' already exists" % dir)
-                quit()
+                return
+
+            # store directory in package dict
+            self.packages[pack['pack']]['dir'] = dir
+
+        for pack in self.dependencies:
+            pack = self.dependencies[pack]
+            dir = os.path.join(prefix, pack['pkgname'])
+            if os.path.exists(dir):
+                Pip2Pkgbuild.log.error("Directory '%s' already exists" % dir)
+                return
 
             # store directory in package dict
             self.packages[pack['pack']]['dir'] = dir
@@ -66,6 +77,32 @@ class Pip2Pkgbuild():
 
             with open(os.path.join(pack['dir'], 'PKGBUILD'), 'w') as f:
                 f.write(pkgbuild)
+
+        for pack in self.dependencies:
+            pack = self.dependencies[pack]
+            pkgbuild = Pip2Pkgbuild._generate_pkgbuild(pack)
+            os.makedirs(pack['dir'])
+
+            with open(os.path.join(pack['dir'], 'PKGBUILD'), 'w') as f:
+                f.write(pkgbuild)
+
+    def install_all(self, prefix='.'):
+        """Install the packages"""
+        self.generate_all(prefix)
+        for _, dep in self.dependencies.items():
+            path = os.getcwd()
+            os.chdir(os.path.join(prefix, dep['pkgname']))
+            subprocess.check_call(['makepkg',
+                                   '--install',
+                                   '--asdeps'])
+            os.chdir(path)
+        for _, pack in self.packages.items():
+            path = os.getcwd()
+            os.chdir(os.path.join(prefix, pack['pkgname']))
+            subprocess.check_call(['makepkg',
+                                   '--install',
+                                   os.path.join(prefix, pack['pkgname'])])
+            os.chdir(path)
 
     def install_in_venv(self, package):
         """Install package in virtualenv"""
@@ -86,8 +123,8 @@ class Pip2Pkgbuild():
 
             # add dependencies to self.packages, if not there yet
             for dep in dependencies:
-                if dep and dep not in self.packages.keys():
-                    self.packages[dep] = Pip2Pkgbuild.compile_package_info(dep)
+                if dep and dep not in self.dependencies.keys():
+                    self.dependencies[dep] = Pip2Pkgbuild.compile_package_info(dep)
 
         except AttributeError:
             dependencies = None
