@@ -18,3 +18,6 @@ class Log():
 
     def error(self, msg):
         self.log.error(msg)
+
+    def set_level(self, level):
+        self.log.setLevel(level)

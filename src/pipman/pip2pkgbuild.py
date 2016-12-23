@@ -12,7 +12,10 @@ class Pip2Pkgbuild():
 
     log = Log()
 
-    def __init__(self, packages):
+    def __init__(self, packages, quiet=False):
+        # if quiet is True, hide all output
+        self.set_quiet(quiet)
+
         # start virtualenv
         self._create_virtualenv()
 
@@ -28,6 +31,25 @@ class Pip2Pkgbuild():
             self.install_in_venv(pack)
             self.packages[pack] = Pip2Pkgbuild.compile_package_info(pack)
 
+
+    def _exec(self, func, command, quiet=None):
+        if quiet is None:
+            quiet = self.quiet
+
+        if quiet:
+            stdout = stderr = DEVNULL
+            func(command, stdout=stdout, stderr=stderr)
+            return
+
+        func(command)
+
+    def set_quiet(self, quiet):
+        self.quiet = quiet
+
+        if quiet:
+            import logging
+            self.log.set_level(logging.CRITICAL)
+
     def _create_virtualenv(self):
         """Create virtualenv to install packages"""
         Pip2Pkgbuild.log.info("Preparing virtualenv")
@@ -40,10 +62,7 @@ class Pip2Pkgbuild():
 
         # upgrade pip
         Pip2Pkgbuild.log.info('checking for pip upgrade')
-        subprocess.check_call([VENV_PIP,
-                               'install',
-                               '-U',
-                               'pip'])
+        self._exec(subprocess.check_call, [VENV_PIP, 'install', '-U', 'pip'])
 
     def generate_all(self, prefix='.'):
         """Generate package/PKGBUILD for every package in self.packages"""
@@ -67,7 +86,7 @@ class Pip2Pkgbuild():
                 return
 
             # store directory in package dict
-            self.packages[pack['pack']]['dir'] = dir
+            self.dependencies[pack['pack']]['dir'] = dir
 
         # generate the package build and store in package/PKGBUILD
         for pack in self.packages:
@@ -92,16 +111,16 @@ class Pip2Pkgbuild():
         for _, dep in self.dependencies.items():
             path = os.getcwd()
             os.chdir(os.path.join(prefix, dep['pkgname']))
-            subprocess.check_call(['makepkg',
-                                   '--install',
-                                   '--asdeps'])
+            self._exec(subprocess.check_call,
+                       ['makepkg', '--install', '--asdeps'], quiet=False)
             os.chdir(path)
         for _, pack in self.packages.items():
             path = os.getcwd()
             os.chdir(os.path.join(prefix, pack['pkgname']))
-            subprocess.check_call(['makepkg',
-                                   '--install',
-                                   os.path.join(prefix, pack['pkgname'])])
+            self._exec(subprocess.check_call,
+                       ['makepkg',
+                        '--install',
+                        os.path.join(prefix, pack['pkgname'])])
             os.chdir(path)
 
     def install_in_venv(self, package):
@@ -109,10 +128,9 @@ class Pip2Pkgbuild():
         Pip2Pkgbuild.log.info("Installing '%s' in virutalenv" % package)
 
         # install package in virtualenv pip
-        subprocess.check_call([VENV_PIP,
-                               'install',
-                               '--disable-pip-version-check',
-                               package])
+        self._exec(subprocess.check_call,
+                   [VENV_PIP, 'install',
+                    '--disable-pip-version-check', package])
 
         dependencies = subprocess.check_output([VENV_PIP, 'show', package])
         dependencies = dependencies.decode(ENCODING)
@@ -128,6 +146,7 @@ class Pip2Pkgbuild():
 
         except AttributeError:
             dependencies = None
+
 
     @staticmethod
     def _generate_pkgbuild(package_info):

@@ -17,6 +17,7 @@ Options:
     -h --help                      Show this screen.
     -t <dir>, --target-dir <dir>   Target dir [default: .].
     -s                             Search for packages in pip's repository
+    -q                             Search for packages in pip's repository
     -i                             Generate PKGBUILDs and call makepkg to install them
 
 Positional:
@@ -27,7 +28,7 @@ Positional:
 from docopt import docopt
 
 
-def generate(args):
+def generate(args, quiet=False):
     from pip2pkgbuild import Pip2Pkgbuild
     dir = args['--target-dir']
     if dir is False:
@@ -35,10 +36,10 @@ def generate(args):
 
     packages = args['<packages>']
 
-    Pip2Pkgbuild(packages).generate_all(dir)
+    Pip2Pkgbuild(packages, quiet=quiet).generate_all(dir)
 
 
-def install(args):
+def install(args, quiet=False):
     from pip2pkgbuild import Pip2Pkgbuild
     dir = args['--target-dir']
     if dir is False:
@@ -46,10 +47,10 @@ def install(args):
 
     packages = args['<packages>']
 
-    Pip2Pkgbuild(packages).install_all(dir)
+    Pip2Pkgbuild(packages, quiet=quiet).install_all(dir)
 
 
-def search(args):
+def search(args, quiet=False):
     from search import search
     search(args['<packages>'])
 
@@ -58,6 +59,7 @@ if __name__ == '__main__':
     args = docopt(__doc__)
 
     action = generate
+    quiet = False
 
     if args['-s']:
         action = search
@@ -65,4 +67,7 @@ if __name__ == '__main__':
     if args['-i']:
         action = install
 
-    action(args)
+    if args['-q']:
+        quiet = True
+
+    action(args, quiet)
