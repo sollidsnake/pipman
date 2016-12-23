@@ -18,10 +18,17 @@ You can also specify where you want the PKGBUILDs to be generated:
 pipman MechanicalSoup pyrasite --target-dir=/tmp/
 ```
 
-As of version 0.9.1 you can search for pip packages with the argument `-s`:
+You can search for pip packages with the argument `-s`:
 ```
 pipman -s sympy
 ```
+
+You can install the generated PKGBUILD automatically with the argument `-i`:
+```
+pipman -i sympy
+```
+
+Check `pipman --help` for more features.
 
 # Todo
 There are a few missing features I plan to implement:
@@ -29,3 +36,6 @@ There are a few missing features I plan to implement:
 - try to integrate with pip dependencies
 - better info output
 - currently works with python3 only
+
+# Credits
+- Thanks to [n3f4s](https://github.com/n3f4s) for the auto-install feature.
