@@ -31,7 +31,6 @@ class Pip2Pkgbuild():
             self.install_in_venv(pack)
             self.packages[pack] = Pip2Pkgbuild.compile_package_info(pack)
 
-
     def _exec(self, func, command, quiet=None):
         if quiet is None:
             quiet = self.quiet
@@ -146,7 +145,6 @@ class Pip2Pkgbuild():
 
         except AttributeError:
             dependencies = None
-
 
     @staticmethod
     def _generate_pkgbuild(package_info):
