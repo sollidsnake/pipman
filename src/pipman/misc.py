@@ -8,6 +8,9 @@ blacklist = []
 # get system encoding
 ENCODING = locale.getdefaultlocale()[1]
 
+if not ENCODING:
+    ENCODING = 'UTF-8'
+
 # get system null device
 DEVNULL = open(os.devnull, 'w')
 
