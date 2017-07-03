@@ -1,10 +1,14 @@
 # Description
-Pipman generates PKGBUILD from pip packages.
+Pipman generates PKGBUILD from pip packages. You can use the generated
+PKGBUILD as a base to submit a new python package to AUR or just
+install it on you machine.
 
 # Installation
 You can install:
 - using the aur package: https://aur4.archlinux.org/packages/pipman-git/
 - cloning this repo and running the `./pipman`
+
+Install the `colorama` module if you want to colorize the output
 
 # Usage
 The following generates PKGBUILDs for `MechanicalSoup` and `pyrasite` packages from pip:
