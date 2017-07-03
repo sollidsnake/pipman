@@ -3,6 +3,9 @@ from misc import ENCODING
 import re
 from pip2pkgbuild import Pip2Pkgbuild
 
+PYTHON_PACKAGE_RE = '[._\w-]+'
+PYTHON_VERSION_RE = '([^ ]*)'
+
 
 def search(packages: list, color=True, pacman_like_output=True):
     """searches packages in pipman repo and display"""
@@ -15,7 +18,7 @@ def search(packages: list, color=True, pacman_like_output=True):
 
     # format pipman output to pacman output
     if pacman_like_output:
-        out = re.sub(r'^([\w-]+) \(([\d.]+)\)\s+- ',
+        out = re.sub(r'^(%s) \(%s\)\s+- ' % (PYTHON_PACKAGE_RE, PYTHON_VERSION_RE),
                      r'\1 \2\n    ',
                      out,
                      flags=re.MULTILINE)
@@ -35,7 +38,7 @@ def _colorize(output):
         return output
         
     init()
-    output = re.sub(r'^([\w-]+) (\d+(\.\d+)?(\.\d+)?)',
+    output = re.sub(r'^(%s) %s' % (PYTHON_PACKAGE_RE, PYTHON_VERSION_RE),
                     r'%s\1%s %s\2%s' % (Fore.MAGENTA,
                                           Fore.RESET,
                                           Fore.CYAN,
