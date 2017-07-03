@@ -18,14 +18,14 @@ You can also specify where you want the PKGBUILDs to be generated:
 pipman MechanicalSoup pyrasite --target-dir=/tmp/
 ```
 
-You can search for pip packages with the argument `-s`:
+You can search for pip packages with the argument `-Ss`:
 ```
-pipman -s sympy
+pipman -Ss sympy
 ```
 
-You can install the generated PKGBUILD automatically with the argument `-i`:
+You can install the generated PKGBUILD automatically with the argument `-S`:
 ```
-pipman -i sympy
+pipman -S sympy
 ```
 
 Check `pipman --help` for more features.

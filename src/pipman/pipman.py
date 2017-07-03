@@ -18,7 +18,7 @@ Options:
     -t <dir>, --target-dir <dir>   Target dir [default: .].
     -s                             Search for packages in pip's repository
     -q                             Search for packages in pip's repository
-    -i                             Generate PKGBUILDs and call makepkg to install them
+    -S                             Generate PKGBUILDs and call makepkg to install them
 
 Positional:
     packages                       Packages to be generated
@@ -61,10 +61,9 @@ if __name__ == '__main__':
     action = generate
     quiet = False
 
-    if args['-s']:
+    if args['-S'] and args['-s']:
         action = search
-
-    if args['-i']:
+    elif args['-S']:
         action = install
 
     if args['-q']:
