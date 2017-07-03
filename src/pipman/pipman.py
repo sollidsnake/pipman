@@ -10,8 +10,8 @@ Usage:
 Examples:
     pipman sympy
     pipman numpy sympy --target-dir=/tmp
-    pipman -s browser
-    pipman -i browser
+    pipman -Ss browser
+    pipman -S browser
 
 Options:
     -h --help                      Show this screen.
