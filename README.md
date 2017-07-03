@@ -32,10 +32,7 @@ Check `pipman --help` for more features.
 
 # Todo
 There are a few missing features I plan to implement:
-- option to install generated PKGBUILDs automatically
-- try to integrate with pip dependencies
-- better info output
-- currently works with python3 only
+- option to update the packages installed with pipman automatically
 
 # Credits
 - Thanks to [n3f4s](https://github.com/n3f4s) for the auto-install feature.
