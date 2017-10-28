@@ -214,6 +214,8 @@ class Pip2Pkgbuild():
             info_dict[i[0]] = i[1]
 
         info_dict['pack'] = package
-        info_dict['pkgname'] = "python-%s" % package.lower()
+        info_dict['pkgname'] = package.lower()
+        if (len(info_dict['pkgname']) >= 7) and (info_dict['pkgname'][:7] != "python-"):
+            info_dict['pkgname'] = "python-%s" % info_dict['pkgname']
 
         return info_dict
