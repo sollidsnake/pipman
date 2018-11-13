@@ -179,8 +179,8 @@ class Pip2Pkgbuild():
         lines.append('makedepends=("python" "python-pip")')
 
         lines.append('build() {')
-        lines.append('  pip install --no-deps --target="%s" %s'
-                     % (package_info['pack'], package_info['pack']))
+        lines.append('  pip install --no-deps --target="%s" %s==%s'
+                     % (package_info['pack'], package_info['pack'], package_info['Version']))
         lines.append('}')
 
         lines.append("package() {")
