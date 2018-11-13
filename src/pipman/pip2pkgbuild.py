@@ -188,7 +188,7 @@ class Pip2Pkgbuild():
         lines.append('  mkdir -p $pkgdir/"$sitepackages"')
         lines.append(('  cp -r $srcdir/%s/* ' +
                       '$pkgdir/"$sitepackages"')
-                     % (package_info['pack'],))
+                     % package_info['pack'])
         lines.append('}')
 
         return "\n".join(lines)
