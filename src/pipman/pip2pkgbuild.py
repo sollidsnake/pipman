@@ -4,7 +4,7 @@ import os
 import venv
 
 from misc import VENV_DIR, VENV_PIP, ENCODING, DEVNULL
-from misc import PYTHON_VERSION, blacklist
+from misc import blacklist
 from log import Log
 
 
@@ -184,12 +184,11 @@ class Pip2Pkgbuild():
         lines.append('}')
 
         lines.append("package() {")
-        lines.append('  mkdir -p $pkgdir/usr/lib/python%s/site-packages/'
-                     % (PYTHON_VERSION))
+        lines.append('  sitepackages=$(python -c "import site; print(site.getsitepackages()[0])")')
+        lines.append('  mkdir -p $pkgdir/"$sitepackages"')
         lines.append(('  cp -r $srcdir/%s/* ' +
-                      '$pkgdir/usr/lib/python%s/site-packages/')
-                     % (package_info['pack'],
-                        PYTHON_VERSION))
+                      '$pkgdir/"$sitepackages"')
+                     % package_info['pack'])
         lines.append('}')
 
         return "\n".join(lines)
