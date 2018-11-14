@@ -153,14 +153,7 @@ class Pip2Pkgbuild():
                               % package_info['pack'])
 
         # regex to match version and release
-        ver_rel = re.search("(\d+(?:\.\d+)+)(?:-(\d+))?",
-                            package_info['Version'])
-
-        version = ver_rel.group(1)
-        release = ver_rel.group(2)
-
-        if not release:
-            release = '1'
+        version = package_info['Version']
 
         # store the pkgbuild output variable in 'lines' var
         lines = []
@@ -170,7 +163,7 @@ class Pip2Pkgbuild():
                      % (package_info['Author'], package_info['Author-email']))
         lines.append('pkgname=%s' % package_info['pkgname'])
         lines.append('pkgver=%s' % version)
-        lines.append('pkgrel=%s' % release)
+        lines.append('pkgrel=1')
 
         lines.append('pkgdesc="%s"' % package_info['Summary'])
         lines.append('arch=(any)')
@@ -180,7 +173,7 @@ class Pip2Pkgbuild():
 
         lines.append('build() {')
         lines.append('  pip install --no-deps --target="%s" %s==%s'
-                     % (package_info['pack'], package_info['pack'], package_info['Version']))
+                     % (package_info['pack'], package_info['pack'], version))
         lines.append('}')
 
         lines.append("package() {")
