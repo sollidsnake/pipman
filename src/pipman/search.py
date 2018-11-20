@@ -16,6 +16,14 @@ def search(packages: list, color=True, pacman_like_output=True):
     # remove whitespace
     out = out.strip()
 
+    # insert space before everyline that's not a package
+    out = re.sub(
+        r'^(?!(%s %s\s+-)|\s)' % (PYTHON_PACKAGE_RE, PYTHON_VERSION_RE),
+        '    ',
+        out,
+        flags=re.MULTILINE,
+    )
+
     # format pipman output to pacman output
     if pacman_like_output:
         out = re.sub(r'^(%s) \(%s\)\s+- ' % (PYTHON_PACKAGE_RE, PYTHON_VERSION_RE),
