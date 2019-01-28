@@ -6,7 +6,47 @@ import venv
 from misc import VENV_DIR, VENV_PIP, ENCODING, DEVNULL
 from misc import blacklist
 from log import Log
+import json
 
+
+class InstallData:
+    DATA_DIR = os.path.join(
+        os.path.expanduser('~'),
+        '.local', 'share', 'pipman'
+    )
+    def __init__(self):
+        """Loads packages into self.data"""
+
+        if not os.path.exists(self.DATA_DIR):
+            os.makedirs(self.DATA_DIR)
+
+        self.data_file = os.path.join(self.DATA_DIR, 'data.json')
+
+        try:
+            with open(self.data_file, 'r') as f:
+                self.data = json.load(f)
+        except FileNotFoundError:
+            self.data = {}
+
+        if not 'installedPackages' in self.data.keys():
+            self.data['installedPackages'] = {}
+
+    def add_package(self, pack):
+        self.data['installedPackages'][pack['pkgname']] = self._get_package_data(pack)
+
+    def save_to_file(self):
+        try:
+            with open(self.data_file, 'w') as f:
+                f.write(json.dumps(self.data))
+        except FileNotFoundError:
+            self.data = {}
+
+    @staticmethod
+    def _get_package_data(pack):
+        return {
+            'version': pack['Version'],
+            'name': pack['Name'],
+        }
 
 class Pip2Pkgbuild():
 
@@ -106,6 +146,8 @@ class Pip2Pkgbuild():
 
     def install_all(self, prefix='.'):
         """Install the packages"""
+        self.data = InstallData()
+
         self.generate_all(prefix)
         for _, dep in self.dependencies.items():
             path = os.getcwd()
@@ -113,6 +155,8 @@ class Pip2Pkgbuild():
             self._exec(subprocess.check_call,
                        ['makepkg', '--install', '--asdeps'], quiet=False)
             os.chdir(path)
+            self.data.add_package(dep)
+
         for _, pack in self.packages.items():
             path = os.getcwd()
             os.chdir(os.path.join(prefix, pack['pkgname']))
@@ -121,6 +165,9 @@ class Pip2Pkgbuild():
                         '--install',
                         os.path.join(prefix, pack['pkgname'])])
             os.chdir(path)
+            self.data.add_package(pack)
+
+        self.data.save_to_file()
 
     def install_in_venv(self, package):
         """Install package in virtualenv"""
@@ -207,7 +254,7 @@ class Pip2Pkgbuild():
 
         info_dict['pack'] = package
         info_dict['pkgname'] = package.lower()
-        if (len(info_dict['pkgname']) >= 7) and (info_dict['pkgname'][:7] != "python-"):
+        if info_dict['pkgname'][:7] != "python-":
             info_dict['pkgname'] = "python-%s" % info_dict['pkgname']
 
         return info_dict

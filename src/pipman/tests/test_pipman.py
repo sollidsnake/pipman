@@ -3,7 +3,7 @@ import os
 import subprocess
 import shutil
 
-from pip2pkgbuild import Pip2Pkgbuild
+from pip2pkgbuild import Pip2Pkgbuild, InstallData
 from misc import DEVNULL, PYTHON_VERSION
 
 
@@ -41,3 +41,22 @@ class TestPipman(unittest.TestCase):
         file_exists = os.path.isfile(init_file)
 
         self.assertEqual(file_exists, True)
+
+    def test_config_file(self):
+        InstallData.DATA_DIR = '/tmp/pipman-test/'
+
+        try:
+            os.remove('/tmp/pipman-test/data.json')
+        except FileNotFoundError:
+            pass
+
+        data = InstallData()
+        pack = Pip2Pkgbuild.compile_package_info(self.package)
+        data.add_package(pack)
+        data.save_to_file()
+
+        data = InstallData()
+        self.assertEqual(data.data, {
+            "installedPackages":
+            {pack['pkgname']: data._get_package_data(pack)}
+        })
