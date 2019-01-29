@@ -32,11 +32,12 @@ You can install the generated PKGBUILD automatically with the argument `-S`:
 pipman -S sympy
 ```
 
-Check `pipman --help` for more features.
+Pipman keeps track of the packages installed using the `-S` option. You can update these packages with the following command:
+```
+pipman -Su
+```
 
-# Todo
-There are a few missing features I plan to implement:
-- option to update the packages installed with pipman automatically
+Check `pipman --help` for more features.
 
 # Credits
 - Thanks to [n3f4s](https://github.com/n3f4s) for the auto-install feature.

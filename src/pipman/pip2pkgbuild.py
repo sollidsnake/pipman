@@ -41,6 +41,15 @@ class InstallData:
         except FileNotFoundError:
             self.data = {}
 
+    def check_updates(self, quiet):
+        update_candidates = []
+        for pack in self.data['installedPackages'].items():
+            info = Pip2Pkgbuild.compile_package_info(pack[1]['name'])
+            if info['Version'] != pack[1]['version']:
+                update_candidates.append(pack[1]['name'])
+
+        Pip2Pkgbuild(update_candidates, quiet=quiet).install_all()
+
     @staticmethod
     def _get_package_data(pack):
         return {
