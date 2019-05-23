@@ -56,8 +56,38 @@ def search(args, quiet=False):
     search(args['<packages>'])
 
 def update(args=None, quite=False):
-    from pip2pkgbuild import InstallData
-    InstallData().check_updates(quiet)
+    from pip2pkgbuild import InstallData, Pip2Pkgbuild
+    packages = InstallData().check_updates(quiet)
+
+    from colorama import Fore, Style
+
+    print()
+
+    if not packages:
+        print('there\'s nothing to do')
+        return
+
+    print('The following packages will be updated:')
+
+    for package in packages:
+        print("%s%s %s%s%s -> %s%s%s" % (
+            Style.BRIGHT,
+            package,
+            Fore.RED,
+            packages[package]['current'],
+            Fore.RESET,
+            Fore.GREEN,
+            packages[package]['next'],
+            Fore.RESET,
+        ))
+
+    print(Style.NORMAL + 'Do you wish to continue? [Y/n] ', end='')
+    answer = input()
+
+    if answer == 'n':
+        return
+
+    Pip2Pkgbuild(packages.keys(), quiet=quiet).install_all()
 
 
 if __name__ == '__main__':

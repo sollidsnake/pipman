@@ -1,6 +1,7 @@
 import subprocess
 import re
 import os
+import shutil
 import venv
 
 from misc import VENV_DIR, VENV_PIP, ENCODING, DEVNULL
@@ -34,6 +35,9 @@ class InstallData:
     def add_package(self, pack):
         self.data['installedPackages'][pack['pkgname']] = self._get_package_data(pack)
 
+    def remove_package(self, pack):
+        self.data['installedPackages'].pop(pack, None)
+
     def save_to_file(self):
         try:
             with open(self.data_file, 'w') as f:
@@ -42,13 +46,34 @@ class InstallData:
             self.data = {}
 
     def check_updates(self, quiet):
-        update_candidates = []
-        for pack in self.data['installedPackages'].items():
-            info = Pip2Pkgbuild.compile_package_info(pack[1]['name'])
-            if info['Version'] != pack[1]['version']:
-                update_candidates.append(pack[1]['name'])
+        update_candidates = {}
+        uninstalled = []
 
-        Pip2Pkgbuild(update_candidates, quiet=quiet).install_all()
+        pip2pkg = Pip2Pkgbuild()
+        pip2pkg._create_virtualenv()
+
+        for pack in self.data['installedPackages'].items():
+            pip2pkg.install_in_venv(pack[1]['name'])
+            info = Pip2Pkgbuild.compile_package_info(pack[1]['name'])
+
+            # check if package was uninstalled by pacman
+            if not pip2pkg.is_package_installed(pack[0]):
+                uninstalled.append(pack[0])
+                continue
+
+            if info['Version'] != pack[1]['version']:
+                update_candidates[pack[1]['name']] = {
+                    'current': pack[1]['version'],
+                    'next': info['Version'],
+                }
+
+        # remove uninstalled packages
+        for pack in uninstalled:
+            self.remove_package(pack)
+
+        self.save_to_file()
+
+        return update_candidates
 
     @staticmethod
     def _get_package_data(pack):
@@ -61,7 +86,18 @@ class Pip2Pkgbuild():
 
     log = Log()
 
-    def __init__(self, packages, quiet=False):
+    def __init__(self, packages=[], quiet=False):
+        self.setup_packages(packages, quiet)
+
+    def is_package_installed(self, package):
+        try:
+            self._exec(subprocess.check_call, ['pacman', '-Qi', package], True)
+        except subprocess.CalledProcessError:
+            return False
+
+        return True
+
+    def setup_packages(self, packages, quiet=False):
         # if quiet is True, hide all output
         self.set_quiet(quiet)
 
@@ -98,9 +134,12 @@ class Pip2Pkgbuild():
             import logging
             self.log.set_level(logging.CRITICAL)
 
-    def _create_virtualenv(self):
+    def _create_virtualenv(self, force=False):
         """Create virtualenv to install packages"""
         Pip2Pkgbuild.log.info("Preparing virtualenv")
+
+        if force:
+            shutil.rmtree(VENV_DIR)
 
         if os.path.exists(VENV_DIR):
             return
