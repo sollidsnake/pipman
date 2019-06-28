@@ -219,7 +219,7 @@ class Pip2Pkgbuild():
 
     def install_in_venv(self, package):
         """Install package in virtualenv"""
-        Pip2Pkgbuild.log.info("Installing '%s' in virutalenv" % package)
+        Pip2Pkgbuild.log.info("Installing '%s' in virtualenv" % package)
 
         # install package in virtualenv pip
         self._exec(subprocess.check_call,
